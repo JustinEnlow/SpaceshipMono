@@ -20,6 +20,8 @@ using Nlo.Math;
         float LinearIntegralX, LinearIntegralY, LinearIntegralZ;
         float AngularIntegralX, AngularIntegralY, AngularIntegralZ;
 
+        const float _radiansToDegreesMultiplier = (180 / Mathf.PI);
+
         void Awake(){
             _rb = GetComponent<Rigidbody>();
             _stats = GetComponent<ShipStats>();
@@ -49,7 +51,8 @@ using Nlo.Math;
             
             // convert velocities from world space to local
             LinearVelocity = _rb.transform.InverseTransformVector(_rb.velocity);
-            AngularVelocity = _rb.transform.InverseTransformVector(_rb.angularVelocity) * (180 / Mathf.PI);
+                //use degrees instead of radians
+            AngularVelocity = _rb.transform.InverseTransformVector(_rb.angularVelocity) * _radiansToDegreesMultiplier;
 
             /*
             Target velocity is specified by multiplying max velocity by player input
@@ -59,21 +62,21 @@ using Nlo.Math;
             if(_assist.TranslationAssistEnabled){
                 _pid.Calculate(_stats.LateralMaxVelocity * LateralInput, LinearVelocity.x, 
                     LinearErrorX, LinearIntegralX, _stats.LinearGainX);
-                LinearOutputX = Clamp.Float((_pid.GetOutput() / _stats.LateralMaxVelocity), -1f, 1f);
-                LinearErrorX = _pid.GetError();
-                LinearIntegralX = _pid.GetIntegral();
+                LinearOutputX = Clamp.Float((_pid.Output / _stats.LateralMaxVelocity), -1f, 1f);
+                LinearErrorX = _pid.Error;
+                LinearIntegralX = _pid.Integral;
                     
                 _pid.Calculate(_stats.VerticalMaxVelocity * VerticalInput, LinearVelocity.y, 
                     LinearErrorY, LinearIntegralY, _stats.LinearGainY);
-                LinearOutputY = Clamp.Float((_pid.GetOutput() / _stats.VerticalMaxVelocity), -1f, 1f);
-                LinearErrorY = _pid.GetError();
-                LinearIntegralY = _pid.GetIntegral();
+                LinearOutputY = Clamp.Float((_pid.Output / _stats.VerticalMaxVelocity), -1f, 1f);
+                LinearErrorY = _pid.Error;
+                LinearIntegralY = _pid.Integral;
                     
                 _pid.Calculate(_stats.LongitudinalMaxVelocity * LongitudinalInput, LinearVelocity.z, 
                     LinearErrorZ, LinearIntegralZ, _stats.LinearGainZ);
-                LinearOutputZ = Clamp.Float((_pid.GetOutput() / _stats.LongitudinalMaxVelocity), -1f, 1f);
-                LinearErrorZ = _pid.GetError();
-                LinearIntegralZ = _pid.GetIntegral();
+                LinearOutputZ = Clamp.Float((_pid.Output / _stats.LongitudinalMaxVelocity), -1f, 1f);
+                LinearErrorZ = _pid.Error;
+                LinearIntegralZ = _pid.Integral;
             }
             /*
             player input directly controls thrust output, unless max velocity is reached. player must manually apply acceleration to 
@@ -98,21 +101,21 @@ using Nlo.Math;
             if(_assist.RotationAssistEnabled){
                 _pid.Calculate(_stats.PitchMaxVelocity * PitchInput, AngularVelocity.x, 
                     AngularErrorX, AngularIntegralX, _stats.AngularGainX);
-                AngularOutputX = Clamp.Float((_pid.GetOutput() / _stats.PitchMaxVelocity), -1f, 1f);
-                AngularErrorX = _pid.GetError();
-                AngularIntegralX = _pid.GetIntegral();
+                AngularOutputX = Clamp.Float((_pid.Output / _stats.PitchMaxVelocity), -1f, 1f);
+                AngularErrorX = _pid.Error;
+                AngularIntegralX = _pid.Integral;
                     
                 _pid.Calculate(_stats.YawMaxVelocity * YawInput, AngularVelocity.y, 
                     AngularErrorY, AngularIntegralY, _stats.AngularGainY);
-                AngularOutputY = Clamp.Float((_pid.GetOutput() / _stats.YawMaxVelocity), -1f, 1f);
-                AngularErrorY = _pid.GetError();
-                AngularIntegralY = _pid.GetIntegral();
+                AngularOutputY = Clamp.Float((_pid.Output / _stats.YawMaxVelocity), -1f, 1f);
+                AngularErrorY = _pid.Error;
+                AngularIntegralY = _pid.Integral;
                     
                 _pid.Calculate(_stats.RollMaxVelocity * RollInput, AngularVelocity.z, 
                     AngularErrorZ, AngularIntegralZ, _stats.AngularGainZ);
-                AngularOutputZ = Clamp.Float((_pid.GetOutput() / _stats.RollMaxVelocity), -1f, 1f);
-                AngularErrorZ = _pid.GetError();
-                AngularIntegralZ = _pid.GetIntegral();
+                AngularOutputZ = Clamp.Float((_pid.Output / _stats.RollMaxVelocity), -1f, 1f);
+                AngularErrorZ = _pid.Error;
+                AngularIntegralZ = _pid.Integral;
             }
             else{
                 AngularOutputX = PitchInput;

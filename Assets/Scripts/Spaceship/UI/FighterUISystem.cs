@@ -77,10 +77,10 @@ public class FighterUISystem : MonoBehaviour{
             if(LeftMFDCanvas.alpha < 1.0f){LeftMFDCanvas.alpha += .01f;}
         }
         if(mfd == MFD.Center){
-
+            if(CenterMFDCanvas.alpha < 1.0f){CenterMFDCanvas.alpha += .01f;}
         }
         if(mfd == MFD.Right){
-            
+            if(RightMFDCanvas.alpha < 1.0f){RightMFDCanvas.alpha += .01f;}
         }
     }
 
@@ -89,10 +89,10 @@ public class FighterUISystem : MonoBehaviour{
             if(LeftMFDCanvas.alpha > 0f){LeftMFDCanvas.alpha -= .01f;}
         }
         if(mfd == MFD.Center){
-            
+            if(CenterMFDCanvas.alpha > 0f){CenterMFDCanvas.alpha -= .01f;}
         }
         if(mfd == MFD.Right){
-            
+            if(RightMFDCanvas.alpha > 0f){RightMFDCanvas.alpha -= .01f;}
         }
     }
 

@@ -2,8 +2,21 @@ using UnityEngine;
 
 public class Radar : MonoBehaviour{ // all radar objects should be on "3dRadar" layer
     // we set baseBlipPrefab here so that we dont have to assign it on each RadarObject
+    MFDSystem mFDSystem;
     [SerializeField]GameObject _baseBlipPrefab;
     Vector3 _baseBlipLocalPosition;
+    [SerializeField]Camera radarCam;
+    [SerializeField]Transform radarCameraTilt;
+
+    void Awake(){
+        mFDSystem = GetComponent<MFDSystem>();
+
+        mFDSystem.OnToggleRadarOrthoPersp += ToggleOrthoPersp;
+        mFDSystem.OnRadarZoomIn += ZoomIn;
+        mFDSystem.OnRadarZoomOut += ZoomOut;
+        mFDSystem.OnRadarTiltUp += TiltUp;
+        mFDSystem.OnRadarTiltDown += TiltDown;
+    }
 
     void OnTriggerEnter(Collider other){
         var radarObject = other.transform.parent.GetComponentInChildren<RadarObject>();
@@ -32,4 +45,16 @@ public class Radar : MonoBehaviour{ // all radar objects should be on "3dRadar" 
         radarObject.DisableTrackingLine();
         radarObject.DestroyBaseBlip();
     }
+
+    void ToggleOrthoPersp(){radarCam.orthographic = !radarCam.orthographic;}
+    void ZoomOut(){
+        radarCam.orthographicSize += 5.0f;
+        radarCam.fieldOfView += 2.5f;
+    }
+    void ZoomIn(){
+        radarCam.orthographicSize -= 5.0f;
+        radarCam.fieldOfView -= 2.5f;
+    }
+    void TiltDown(){radarCameraTilt.Rotate(Vector3.right * -2);}
+    void TiltUp(){radarCameraTilt.Rotate(Vector3.right * 2);}
 }

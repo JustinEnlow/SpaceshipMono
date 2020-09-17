@@ -3,10 +3,7 @@ using TMPro;
 using Nlo.Tuning;
 
 public class FighterUISystem : MonoBehaviour{
-    FlightAssistToggleSystem _flight;
-    PowerToggleSystem _power;
-    MFDSystem _mfd;
-    TuningSystem _tuning;
+    Ship ship;
     
     [SerializeField]GameObject FighterUI;
     [SerializeField]GameObject TranslationAssistWarning;
@@ -27,35 +24,30 @@ public class FighterUISystem : MonoBehaviour{
     [SerializeField]GameObject RightMFDRadarScreen;
     [SerializeField]GameObject RightMFDWeaponScreen;
 
-    void Awake(){
-        _flight = GetComponent<FlightAssistToggleSystem>();
-        _power = GetComponent<PowerToggleSystem>();
-        _mfd = GetComponent<MFDSystem>();
-        _tuning = GetComponent<TuningSystem>();
-    }
+    void Awake(){ship = GetComponent<Ship>();}
     void OnEnable(){
-        _power.OnPowerToggled += UpdatePowerStatus;
-        _flight.OnTranslationAssistToggled += UpdateTranslationAssist;
-        _flight.OnRotationAssistToggled += UpdateRotationAssist;
-        _tuning.OnNameChanged += UpdateTuningName;
-        _tuning.OnValueChanged += UpdateTuningValue;
-        _tuning.OnIncrementChanged += UpdateTuningIncrement;
-        _mfd.OnIncreaseMFDBrightness += IncreaseMFDBrightness;
-        _mfd.OnDecreaseMFDBrightness += DecreaseMFDBrightness;
-        _mfd.OnActivateMFDMainScreen += ActivateMFDMainScreen;
-        _mfd.OnActivateMFDRadarScreen += ActivateMFDRadarScreen;
-        _mfd.OnActivateMFDWeaponScreen += ActivateMFDWeaponScreen;
+        ship.power.OnPowerToggled += UpdatePowerStatus;
+        ship.assistToggle.OnTranslationAssistToggled += UpdateTranslationAssist;
+        ship.assistToggle.OnRotationAssistToggled += UpdateRotationAssist;
+        ship.tuning.OnNameChanged += UpdateTuningName;
+        ship.tuning.OnValueChanged += UpdateTuningValue;
+        ship.tuning.OnIncrementChanged += UpdateTuningIncrement;
+        ship.mfd.OnIncreaseMFDBrightness += IncreaseMFDBrightness;
+        ship.mfd.OnDecreaseMFDBrightness += DecreaseMFDBrightness;
+        ship.mfd.OnActivateMFDMainScreen += ActivateMFDMainScreen;
+        ship.mfd.OnActivateMFDRadarScreen += ActivateMFDRadarScreen;
+        ship.mfd.OnActivateMFDWeaponScreen += ActivateMFDWeaponScreen;
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void UpdateTranslationAssistWarning(){
-        TranslationAssistWarning.SetActive(_flight.TranslationAssistEnabled == false && _power.On);
+        TranslationAssistWarning.SetActive(ship.assistToggle.TranslationAssistEnabled == false && ship.power.On);
     }
     void UpdateRotationAssistWarning(){
-        RotationAssistWarning.SetActive(_flight.RotationAssistEnabled == false && _power.On);
+        RotationAssistWarning.SetActive(ship.assistToggle.RotationAssistEnabled == false && ship.power.On);
     }
 
     void UpdatePowerStatus(){
-        FighterUI.SetActive(_power.On);
+        FighterUI.SetActive(ship.power.On);
         UpdateTranslationAssistWarning();
         UpdateRotationAssistWarning();
     }

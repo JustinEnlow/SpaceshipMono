@@ -2,13 +2,13 @@
 using Nlo.Math;
 
 //namespace Nlo.Flight{
-    public class FlightAssistSystem : MonoBehaviour{
-        Rigidbody _rb;
-        ShipStats _stats;
-        PowerToggleSystem _power;
-        FlightAssistToggleSystem _assist;
-        InputController _input;
-        PID _pid;
+    public class FlightAssistSystem{
+        Rigidbody rb;
+        ShipStats stats;
+        PowerToggleSystem power;
+        FlightAssistToggleSystem assist;
+        InputController input;
+        PID pid;
         
         [SerializeField]Vector3 LinearVelocity, AngularVelocity;
         float LateralInput, VerticalInput, LongitudinalInput;
@@ -22,21 +22,22 @@ using Nlo.Math;
 
         const float _radiansToDegreesMultiplier = (180 / Mathf.PI);
 
-        void Awake(){
-            _rb = GetComponent<Rigidbody>();
-            _stats = GetComponent<ShipStats>();
-            _power = GetComponent<PowerToggleSystem>();
-            _assist = GetComponent<FlightAssistToggleSystem>();
-            _input = GetComponentInChildren<InputController>();
-            _pid = new PID(Time.fixedDeltaTime);
-        }
-        void OnEnable(){
-            _input.OnLateralInputChanged += UpdateLateralInput;
-            _input.OnVerticalInputChanged += UpdateVerticalInput;
-            _input.OnLongitudinalInputChanged += UpdateLongitudinalInput;
-            _input.OnPitchInputChanged += UpdatePitchInput;
-            _input.OnYawInputChanged += UpdateYawInput;
-            _input.OnRollInputChanged += UpdateRollInput;
+        public FlightAssistSystem(Rigidbody rb, ShipStats stats, PowerToggleSystem power, FlightAssistToggleSystem assist,
+            InputController input, float deltaTime){
+
+            this.rb = rb;
+            this.stats = stats;
+            this.power = power;
+            this.assist = assist;
+            this.input = input;
+            pid = new PID();
+
+            input.OnLateralInputChanged += UpdateLateralInput;
+            input.OnVerticalInputChanged += UpdateVerticalInput;
+            input.OnLongitudinalInputChanged += UpdateLongitudinalInput;
+            input.OnPitchInputChanged += UpdatePitchInput;
+            input.OnYawInputChanged += UpdateYawInput;
+            input.OnRollInputChanged += UpdateRollInput;
         }
 
         void UpdateLateralInput(float value){LateralInput = value;}
@@ -46,37 +47,37 @@ using Nlo.Math;
         void UpdateYawInput(float value){YawInput = value;}
         void UpdateRollInput(float value){RollInput = value;}
 
-        void FixedUpdate(){
-            if(_power.On == false) return;
+        public void Process(float deltaTime){
+            if(power.On == false) return;
             
             // convert velocities from world space to local
-            LinearVelocity = _rb.transform.InverseTransformVector(_rb.velocity);
+            LinearVelocity = rb.transform.InverseTransformVector(rb.velocity);
                 //use degrees instead of radians
-            AngularVelocity = _rb.transform.InverseTransformVector(_rb.angularVelocity) * _radiansToDegreesMultiplier;
+            AngularVelocity = rb.transform.InverseTransformVector(rb.angularVelocity) * _radiansToDegreesMultiplier;
 
             /*
             Target velocity is specified by multiplying max velocity by player input
             The pid controller determines how much output we need to feed to the thrust system to reduce the difference between target 
             velocity and current velocity
             */
-            if(_assist.TranslationAssistEnabled){
-                _pid.Calculate(_stats.LateralMaxVelocity * LateralInput, LinearVelocity.x, 
-                    LinearErrorX, LinearIntegralX, _stats.LinearGainX);
-                LinearOutputX = Clamp.Float((_pid.Output / _stats.LateralMaxVelocity), -1f, 1f);
-                LinearErrorX = _pid.Error;
-                LinearIntegralX = _pid.Integral;
+            if(assist.TranslationAssistEnabled){
+                pid.Calculate(stats.LateralMaxVelocity * LateralInput, LinearVelocity.x, 
+                    LinearErrorX, LinearIntegralX, stats.LinearGainX, deltaTime);
+                LinearOutputX = Clamp.Float((pid.Output / stats.LateralMaxVelocity), -1f, 1f);
+                LinearErrorX = pid.Error;
+                LinearIntegralX = pid.Integral;
                     
-                _pid.Calculate(_stats.VerticalMaxVelocity * VerticalInput, LinearVelocity.y, 
-                    LinearErrorY, LinearIntegralY, _stats.LinearGainY);
-                LinearOutputY = Clamp.Float((_pid.Output / _stats.VerticalMaxVelocity), -1f, 1f);
-                LinearErrorY = _pid.Error;
-                LinearIntegralY = _pid.Integral;
+                pid.Calculate(stats.VerticalMaxVelocity * VerticalInput, LinearVelocity.y, 
+                    LinearErrorY, LinearIntegralY, stats.LinearGainY, deltaTime);
+                LinearOutputY = Clamp.Float((pid.Output / stats.VerticalMaxVelocity), -1f, 1f);
+                LinearErrorY = pid.Error;
+                LinearIntegralY = pid.Integral;
                     
-                _pid.Calculate(_stats.LongitudinalMaxVelocity * LongitudinalInput, LinearVelocity.z, 
-                    LinearErrorZ, LinearIntegralZ, _stats.LinearGainZ);
-                LinearOutputZ = Clamp.Float((_pid.Output / _stats.LongitudinalMaxVelocity), -1f, 1f);
-                LinearErrorZ = _pid.Error;
-                LinearIntegralZ = _pid.Integral;
+                pid.Calculate(stats.LongitudinalMaxVelocity * LongitudinalInput, LinearVelocity.z, 
+                    LinearErrorZ, LinearIntegralZ, stats.LinearGainZ, deltaTime);
+                LinearOutputZ = Clamp.Float((pid.Output / stats.LongitudinalMaxVelocity), -1f, 1f);
+                LinearErrorZ = pid.Error;
+                LinearIntegralZ = pid.Integral;
             }
             /*
             player input directly controls thrust output, unless max velocity is reached. player must manually apply acceleration to 
@@ -88,60 +89,60 @@ using Nlo.Math;
                 LinearOutputZ = LongitudinalInput;
 
                     //prevent ship from exceeding max velocity
-                if(LinearVelocity.x >=  _stats.LateralMaxVelocity && LateralInput > 0){LinearOutputX = 0;}
-                if(LinearVelocity.x <= -_stats.LateralMaxVelocity && LateralInput < 0){LinearOutputX = 0;}
+                if(LinearVelocity.x >=  stats.LateralMaxVelocity && LateralInput > 0){LinearOutputX = 0;}
+                if(LinearVelocity.x <= -stats.LateralMaxVelocity && LateralInput < 0){LinearOutputX = 0;}
                     
-                if(LinearVelocity.y >=  _stats.VerticalMaxVelocity && VerticalInput > 0){LinearOutputY = 0;}
-                if(LinearVelocity.y <= -_stats.VerticalMaxVelocity && VerticalInput < 0){LinearOutputY = 0;}
+                if(LinearVelocity.y >=  stats.VerticalMaxVelocity && VerticalInput > 0){LinearOutputY = 0;}
+                if(LinearVelocity.y <= -stats.VerticalMaxVelocity && VerticalInput < 0){LinearOutputY = 0;}
                     
-                if(LinearVelocity.z >=  _stats.LongitudinalMaxVelocity && LongitudinalInput > 0){LinearOutputZ = 0;}
-                if(LinearVelocity.z <= -_stats.LongitudinalMaxVelocity && LongitudinalInput < 0){LinearOutputZ = 0;}        
+                if(LinearVelocity.z >=  stats.LongitudinalMaxVelocity && LongitudinalInput > 0){LinearOutputZ = 0;}
+                if(LinearVelocity.z <= -stats.LongitudinalMaxVelocity && LongitudinalInput < 0){LinearOutputZ = 0;}        
             }
                 
-            if(_assist.RotationAssistEnabled){
-                _pid.Calculate(_stats.PitchMaxVelocity * PitchInput, AngularVelocity.x, 
-                    AngularErrorX, AngularIntegralX, _stats.AngularGainX);
-                AngularOutputX = Clamp.Float((_pid.Output / _stats.PitchMaxVelocity), -1f, 1f);
-                AngularErrorX = _pid.Error;
-                AngularIntegralX = _pid.Integral;
+            if(assist.RotationAssistEnabled){
+                pid.Calculate(stats.PitchMaxVelocity * PitchInput, AngularVelocity.x, 
+                    AngularErrorX, AngularIntegralX, stats.AngularGainX, deltaTime);
+                AngularOutputX = Clamp.Float((pid.Output / stats.PitchMaxVelocity), -1f, 1f);
+                AngularErrorX = pid.Error;
+                AngularIntegralX = pid.Integral;
                     
-                _pid.Calculate(_stats.YawMaxVelocity * YawInput, AngularVelocity.y, 
-                    AngularErrorY, AngularIntegralY, _stats.AngularGainY);
-                AngularOutputY = Clamp.Float((_pid.Output / _stats.YawMaxVelocity), -1f, 1f);
-                AngularErrorY = _pid.Error;
-                AngularIntegralY = _pid.Integral;
+                pid.Calculate(stats.YawMaxVelocity * YawInput, AngularVelocity.y, 
+                    AngularErrorY, AngularIntegralY, stats.AngularGainY, deltaTime);
+                AngularOutputY = Clamp.Float((pid.Output / stats.YawMaxVelocity), -1f, 1f);
+                AngularErrorY = pid.Error;
+                AngularIntegralY = pid.Integral;
                     
-                _pid.Calculate(_stats.RollMaxVelocity * RollInput, AngularVelocity.z, 
-                    AngularErrorZ, AngularIntegralZ, _stats.AngularGainZ);
-                AngularOutputZ = Clamp.Float((_pid.Output / _stats.RollMaxVelocity), -1f, 1f);
-                AngularErrorZ = _pid.Error;
-                AngularIntegralZ = _pid.Integral;
+                pid.Calculate(stats.RollMaxVelocity * RollInput, AngularVelocity.z, 
+                    AngularErrorZ, AngularIntegralZ, stats.AngularGainZ, deltaTime);
+                AngularOutputZ = Clamp.Float((pid.Output / stats.RollMaxVelocity), -1f, 1f);
+                AngularErrorZ = pid.Error;
+                AngularIntegralZ = pid.Integral;
             }
             else{
                 AngularOutputX = PitchInput;
                 AngularOutputY = YawInput;
                 AngularOutputZ = RollInput;
                     
-                if(AngularVelocity.x >=  _stats.PitchMaxVelocity && PitchInput > 0){AngularOutputX = 0;}
-                if(AngularVelocity.x <= -_stats.PitchMaxVelocity && PitchInput < 0){AngularOutputX = 0;}
+                if(AngularVelocity.x >=  stats.PitchMaxVelocity && PitchInput > 0){AngularOutputX = 0;}
+                if(AngularVelocity.x <= -stats.PitchMaxVelocity && PitchInput < 0){AngularOutputX = 0;}
                     
-                if(AngularVelocity.y >=  _stats.YawMaxVelocity && YawInput > 0){AngularOutputY = 0;}
-                if(AngularVelocity.y <= -_stats.YawMaxVelocity && YawInput < 0){AngularOutputY = 0;}
+                if(AngularVelocity.y >=  stats.YawMaxVelocity && YawInput > 0){AngularOutputY = 0;}
+                if(AngularVelocity.y <= -stats.YawMaxVelocity && YawInput < 0){AngularOutputY = 0;}
                     
-                if(AngularVelocity.z >=  _stats.RollMaxVelocity && RollInput > 0){AngularOutputZ = 0;}
-                if(AngularVelocity.z <= -_stats.RollMaxVelocity && RollInput < 0){AngularOutputZ = 0;}
+                if(AngularVelocity.z >=  stats.RollMaxVelocity && RollInput > 0){AngularOutputZ = 0;}
+                if(AngularVelocity.z <= -stats.RollMaxVelocity && RollInput < 0){AngularOutputZ = 0;}
             }
 
             // output necessary values to unity physics system
-            _rb.AddRelativeForce(
-                LinearOutputX * _stats.LateralDesiredThrust, 
-                LinearOutputY * _stats.VerticalDesiredThrust, 
-                LinearOutputZ * _stats.LongitudinalDesiredThrust, 
+            rb.AddRelativeForce(
+                LinearOutputX * stats.LateralDesiredThrust, 
+                LinearOutputY * stats.VerticalDesiredThrust, 
+                LinearOutputZ * stats.LongitudinalDesiredThrust, 
                 ForceMode.Force);
-            _rb.AddRelativeTorque(
-                AngularOutputX * _stats.PitchDesiredThrust, 
-                AngularOutputY * _stats.YawDesiredThrust, 
-                AngularOutputZ * _stats.RollDesiredThrust, 
+            rb.AddRelativeTorque(
+                AngularOutputX * stats.PitchDesiredThrust, 
+                AngularOutputY * stats.YawDesiredThrust, 
+                AngularOutputZ * stats.RollDesiredThrust, 
                 ForceMode.Force);
         }
     }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using Nlo.Math;
 
-public class ShipStats : MonoBehaviour, IShoot{
+public class ShipStats : IShoot{
     public float TotalHealth{get;set;}
     public float CurrentHealth{get;set;}
     public float ArmorAmount{get;set;}
@@ -27,60 +27,60 @@ public class ShipStats : MonoBehaviour, IShoot{
     public float DamageAmount{get; set;}
     public PIDGain LinearGainX, LinearGainY, LinearGainZ, AngularGainX, AngularGainY, AngularGainZ;
 
-    void Awake(/*float totalHealth, float armorAmount, float lateralMaxVelocity, float verticalMaxVelocity, 
+    public ShipStats(float totalHealth, float armorAmount, float lateralMaxVelocity, float verticalMaxVelocity, 
         float longitudinalMaxVelocity, float pitchMaxVelocity, float yawMaxVelocity, float rollMaxVelocity,
-        float lateralmaxThrust, float verticalMaxThrust, float longitudinalMaxThrust, float pitchMaxThrust, 
+        float lateralMaxThrust, float verticalMaxThrust, float longitudinalMaxThrust, float pitchMaxThrust, 
         float yawMaxThrust, float rollMaxThrust, int shootDistance, float damageAmount, float linearXGainP,
         float linearXGainI, float linearXGainD, float linearYGainP, float linearYGainI, float linearYGainD, 
         float linearZGainP, float linearZGainI, float linearZGainD, float angularXGainP, float angularXGainI,
         float angularXGainD, float angularYGainP, float angularYGainI, float angularYGainD, float angularZGainP,
-        float angularZGainI, float angularZGainD*/){
+        float angularZGainI, float angularZGainD){
 
-        TotalHealth   = 100f;
+        TotalHealth   = totalHealth;
         CurrentHealth = TotalHealth;
-        ArmorAmount   = 0f;
+        ArmorAmount   = armorAmount;
 
-        LateralMaxVelocity      = 25;
-        VerticalMaxVelocity     = 25;
-        LongitudinalMaxVelocity = 25;
-        PitchMaxVelocity        = 75;
-        YawMaxVelocity          = 75;
-        RollMaxVelocity         = 75;
+        LateralMaxVelocity      = lateralMaxVelocity;
+        VerticalMaxVelocity     = verticalMaxVelocity;
+        LongitudinalMaxVelocity = longitudinalMaxVelocity;
+        PitchMaxVelocity        = pitchMaxVelocity;
+        YawMaxVelocity          = yawMaxVelocity;
+        RollMaxVelocity         = rollMaxVelocity;
         
-        LateralMaxThrust      = 30000f;
-        VerticalMaxThrust     = 30000f;
-        LongitudinalMaxThrust = 30000f;
+        LateralMaxThrust      = lateralMaxThrust;
+        VerticalMaxThrust     = verticalMaxThrust;
+        LongitudinalMaxThrust = longitudinalMaxThrust;
         LateralDesiredThrust = LateralMaxThrust;
         VerticalDesiredThrust = VerticalMaxThrust;
         LongitudinalDesiredThrust = LongitudinalMaxThrust;
-        PitchMaxThrust = 30000f;
-        YawMaxThrust   = 30000f;
-        RollMaxThrust  = 30000f;
+        PitchMaxThrust = pitchMaxThrust;
+        YawMaxThrust   = yawMaxThrust;
+        RollMaxThrust  = rollMaxThrust;
         PitchDesiredThrust = PitchMaxThrust;
         YawDesiredThrust = YawMaxThrust;
         RollDesiredThrust = RollMaxThrust;
         
-        ShootDistance = 100;
-        DamageAmount  = 10f;
+        ShootDistance = shootDistance;
+        DamageAmount  = damageAmount;
 
-        LinearGainX.p = 100f;
-        LinearGainX.i = 0f;
-        LinearGainX.d = 0f;
-        LinearGainY.p = 100f;
-        LinearGainY.i = 0f;
-        LinearGainY.d = 0f;
-        LinearGainZ.p = 100f;
-        LinearGainZ.i = 0f;
-        LinearGainZ.d = 0f;
+        LinearGainX.p = linearXGainP;
+        LinearGainX.i = linearXGainI;
+        LinearGainX.d = linearXGainD;
+        LinearGainY.p = linearYGainP;
+        LinearGainY.i = linearYGainI;
+        LinearGainY.d = linearYGainD;
+        LinearGainZ.p = linearZGainP;
+        LinearGainZ.i = linearZGainI;
+        LinearGainZ.d = linearZGainD;
 
-        AngularGainX.p = 1f;
-        AngularGainX.i = 0f;
-        AngularGainX.d = 0f;
-        AngularGainY.p = 1f;
-        AngularGainY.i = 0f;
-        AngularGainY.d = 0f;
-        AngularGainZ.p = 1f;
-        AngularGainZ.i = 0f;
-        AngularGainZ.d = 0f;
+        AngularGainX.p = angularXGainP;
+        AngularGainX.i = angularXGainI;
+        AngularGainX.d = angularXGainD;
+        AngularGainY.p = angularYGainP;
+        AngularGainY.i = angularYGainI;
+        AngularGainY.d = angularYGainD;
+        AngularGainZ.p = angularZGainP;
+        AngularGainZ.i = angularZGainI;
+        AngularGainZ.d = angularZGainD;
     }
 }

@@ -1,21 +1,20 @@
 ﻿using System;
 using UnityEngine;
 
-public class PowerToggleSystem : MonoBehaviour{
-    InputController _input;
-    PowerToggleClick _powerToggleInteract;
+public class PowerToggleSystem{
+    InputController input;
+    PowerToggleClick powerToggleInteract;
 
     public bool On{get; private set;}
     
     public event Action OnPowerToggled;
 
-    void Awake(){
-        _input = GetComponentInChildren<InputController>();
-        _powerToggleInteract = GetComponentInChildren<PowerToggleClick>();
-    }
-    void OnEnable(){
-        _input.OnTogglePower += TogglePower;
-        _powerToggleInteract.OnInteract += TogglePower;
+    public PowerToggleSystem(InputController input, PowerToggleClick powerToggleInteract){
+        this.input = input;
+        this.powerToggleInteract = powerToggleInteract;
+
+        input.OnTogglePower += TogglePower;
+        powerToggleInteract.OnInteract += TogglePower;
     }
 
     public void TogglePower(){
@@ -23,8 +22,8 @@ public class PowerToggleSystem : MonoBehaviour{
         OnPowerToggled?.Invoke();
     }
     
-    void OnDisable(){
-        _input.OnTogglePower -= TogglePower;
-        _powerToggleInteract.OnInteract -= TogglePower;
+    ~PowerToggleSystem(){
+        input.OnTogglePower -= TogglePower;
+        powerToggleInteract.OnInteract -= TogglePower;
     }
 }

@@ -2,9 +2,9 @@
 using System;
 using UnityEngine;
 
-public class FlightAssistToggleSystem : MonoBehaviour{
-    PowerToggleSystem _power;
-    InputController _input;
+public class FlightAssistToggleSystem{
+    PowerToggleSystem power;
+    InputController input;
     
     public bool TranslationAssistEnabled{get; private set;}
     public bool RotationAssistEnabled{get; private set;}
@@ -12,32 +12,31 @@ public class FlightAssistToggleSystem : MonoBehaviour{
     public event Action OnTranslationAssistToggled;
     public event Action OnRotationAssistToggled;
 
-    void Awake(){
-        _power = GetComponent<PowerToggleSystem>();
-        _input = GetComponentInChildren<InputController>();
+    public FlightAssistToggleSystem(PowerToggleSystem power, InputController input){
+        this.power = power;
+        this.input = input;
         TranslationAssistEnabled = true;
         RotationAssistEnabled = true;
-    }
-    void OnEnable(){
-        _input.OnToggleTranslationAssist += TranslationAssistToggle;
-        _input.OnToggleRotationAssist += RotationAssistToggle;
+
+        input.OnToggleTranslationAssist += TranslationAssistToggle;
+        input.OnToggleRotationAssist += RotationAssistToggle;
     }
 
     public void TranslationAssistToggle(){
-        if(_power.On){
+        if(power.On){
             TranslationAssistEnabled = !TranslationAssistEnabled;
             OnTranslationAssistToggled?.Invoke();
         }
     }
     public void RotationAssistToggle(){
-        if(_power.On){
+        if(power.On){
             RotationAssistEnabled = !RotationAssistEnabled;
             OnRotationAssistToggled?.Invoke();
         }
     }
 
-    void OnDisable(){
-        _input.OnToggleTranslationAssist -= TranslationAssistToggle;
-        _input.OnToggleRotationAssist -= RotationAssistToggle;
+    ~FlightAssistToggleSystem(){
+        input.OnToggleTranslationAssist -= TranslationAssistToggle;
+        input.OnToggleRotationAssist -= RotationAssistToggle;
     }
 }

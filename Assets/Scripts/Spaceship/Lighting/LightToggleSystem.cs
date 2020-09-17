@@ -3,9 +3,9 @@ using UnityEngine;
 
 public enum Light{Flood, Position, Strobe};
 
-public class LightToggleSystem : MonoBehaviour{
-    InputController _input;
-    LightsInteract[] _lights;
+public class LightToggleSystem{
+    InputController input;
+    LightsInteract[] lights;
     
     public bool FloodLightsOn{get; private set;}
     public bool PositionLightsOn{get; private set;}
@@ -15,7 +15,7 @@ public class LightToggleSystem : MonoBehaviour{
     public event Action OnPositionLightsToggled;
     public event Action OnStrobeLightsToggled;
 
-    void Awake(){
+    /*void Awake(){
         _input = GetComponentInChildren<InputController>();
         _lights = GetComponentsInChildren<LightsInteract>();
         }
@@ -23,6 +23,16 @@ public class LightToggleSystem : MonoBehaviour{
         _input.OnToggleLights += ToggleLights;
         for(int i = 0; i < _lights.Length; i++){
             _lights[i].OnInteract += ToggleLights;
+        }
+    }*/
+
+    public LightToggleSystem(InputController input, LightsInteract[] lights){
+        this.input = input;
+        this.lights = lights;
+
+        this.input.OnToggleLights += ToggleLights;
+        for(int i = 0; i < this.lights.Length; i++){
+            this.lights[i].OnInteract += ToggleLights;
         }
     }
     
@@ -41,10 +51,10 @@ public class LightToggleSystem : MonoBehaviour{
         }
     }
 
-    void OnDisable(){
+    /*void OnDisable(){
         _input.OnToggleLights -= ToggleLights;
         for(int i = 0; i < _lights.Length; i++){
             _lights[i].OnInteract -= ToggleLights;
         }
-    }
+    }*/
 }

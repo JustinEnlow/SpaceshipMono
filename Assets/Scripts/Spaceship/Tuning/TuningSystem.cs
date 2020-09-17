@@ -6,16 +6,17 @@ using Nlo.Tuning;
 public enum TuningPot{Parameter, Main, Value, Increment};
 public enum TuningParameter{PID, Thrust, Velocity};
 
-public class TuningSystem : MonoBehaviour{
+public class TuningSystem{
     public ITune Tuning{get; private set;}
     
-    PowerToggleSystem _power;
-    InputController _input;
-    TuningPotInteract[] _pots;
+    PowerToggleSystem power;
+    InputController input;
+    TuningPotInteract[] pots;
+    ShipStats stats;
     
-    PIDTuning _pidLogic;
-    ThrustTuning _thrustLogic;
-    VelocityTuning _velocityLogic;
+    PIDTuning pidLogic;
+    ThrustTuning thrustLogic;
+    VelocityTuning velocityLogic;
 
     TuningParameter currentParameter = TuningParameter.PID;
 
@@ -24,7 +25,7 @@ public class TuningSystem : MonoBehaviour{
     public event Action<string> OnIncrementChanged;
 
 
-    void Awake(){
+    /*void Awake(){
         _power = GetComponent<PowerToggleSystem>();
         _input = GetComponentInChildren<InputController>();
         _pots = GetComponentsInChildren<TuningPotInteract>();
@@ -41,10 +42,29 @@ public class TuningSystem : MonoBehaviour{
             _pots[i].OnInteract += InteractResponse;
             _pots[i].OnInteractAlternate += InteractAlternateResponse;
         }
+    }*/
+
+    public TuningSystem(PowerToggleSystem power, InputController input, TuningPotInteract[] pots, ShipStats stats){
+        this.power = power;
+        this.input = input;
+        this.pots = pots;
+        this.stats = stats;
+        pidLogic = new PIDTuning(this.stats);
+        thrustLogic = new ThrustTuning(this.stats);
+        velocityLogic = new VelocityTuning(this.stats);
+
+        UpdateTuningParameter();
+
+        this.input.OnTuningInteract += InteractResponse;
+        this.input.OnTuningInteractAlternate += InteractAlternateResponse;
+        for(int i = 0; i < this.pots.Length; i++){
+            this.pots[i].OnInteract += InteractResponse;
+            this.pots[i].OnInteractAlternate += InteractAlternateResponse;
+        }
     }
 
     public void InteractResponse(TuningPot tuningPot){
-        if(_power.On == false) return;
+        if(power.On == false) return;
 
         if(tuningPot == TuningPot.Parameter){
             if(currentParameter < TuningParameter.Velocity){
@@ -66,7 +86,7 @@ public class TuningSystem : MonoBehaviour{
         }
     }
     public void InteractAlternateResponse(TuningPot tuningPot){
-        if(_power.On == false) return;
+        if(power.On == false) return;
 
         if(tuningPot == TuningPot.Parameter){
             if(currentParameter > TuningParameter.PID){
@@ -89,9 +109,9 @@ public class TuningSystem : MonoBehaviour{
     }
     
     void UpdateTuningParameter(){
-        if(currentParameter == TuningParameter.PID){Tuning = _pidLogic;}
-        else if(currentParameter == TuningParameter.Thrust){Tuning = _thrustLogic;}
-        else if(currentParameter == TuningParameter.Velocity){Tuning = _velocityLogic;}
+        if(currentParameter == TuningParameter.PID){Tuning = pidLogic;}
+        else if(currentParameter == TuningParameter.Thrust){Tuning = thrustLogic;}
+        else if(currentParameter == TuningParameter.Velocity){Tuning = velocityLogic;}
             
         TriggerUIUpdate();
     }
@@ -102,11 +122,11 @@ public class TuningSystem : MonoBehaviour{
         OnIncrementChanged?.Invoke(Tuning.Increment);
     }
     
-    void OnDisable(){
+    /*void OnDisable(){
         _input.OnTuningInteract -= InteractResponse;
         _input.OnTuningInteractAlternate -= InteractAlternateResponse;for(int i = 0; i < _pots.Length; i++){
             _pots[i].OnInteract -= InteractResponse;
             _pots[i].OnInteractAlternate -= InteractAlternateResponse;
         }
-    }
+    }*/
 }

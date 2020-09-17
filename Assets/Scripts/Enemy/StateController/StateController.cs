@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class StateController : MonoBehaviour{
     StateCombat _combatState;
-    PowerToggleSystem _power;
+    //PowerToggleSystem _power;
     [SerializeField]GameObject _target;
     
     // bool shipInRange;
@@ -12,10 +12,10 @@ public class StateController : MonoBehaviour{
     
     void Awake(){
         _combatState = GetComponent<StateCombat>();
-        _power = GetComponent<PowerToggleSystem>();
+        //_power = GetComponent<PowerToggleSystem>();
     }
 
-    void Start(){_power.TogglePower();}
+    //void Start(){_power.TogglePower();}
 
     public void Update(){
         // get targets position relative to this gameObject(this gameObject would be at 0,0,0)

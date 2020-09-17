@@ -1,21 +1,20 @@
 ﻿using System;
 using UnityEngine;
 
-public class MasterArmSystem : MonoBehaviour{
-    InputController _input;
-    MasterArmClick _masterArmInteract;
+public class MasterArmSystem{
+    InputController input;
+    MasterArmClick masterArmInteract;
 
     public bool Armed{get; private set;}
     
     public event Action OnMasterArmToggled;
 
-    void Awake(){
-        _input = GetComponentInChildren<InputController>();
-        _masterArmInteract = GetComponentInChildren<MasterArmClick>();
-    }
-    void OnEnable(){
-        _input.OnToggleMasterArm += ToggleMasterArm;
-        _masterArmInteract.OnInteract += ToggleMasterArm;
+    public MasterArmSystem(InputController input, MasterArmClick masterArmInteract){
+        this.input = input;
+        this.masterArmInteract = masterArmInteract;
+
+        input.OnToggleMasterArm += ToggleMasterArm;
+        masterArmInteract.OnInteract += ToggleMasterArm;
     }
 
     public void ToggleMasterArm(){

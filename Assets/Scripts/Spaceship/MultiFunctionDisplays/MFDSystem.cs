@@ -5,13 +5,13 @@ public enum MFD{Left, Center, Right};
 public enum MFDRow{Top, Left, Right, Bottom};
 public enum MFDScreen{Main, Radar, Weapon};
 
-public class MFDSystem : MonoBehaviour{
-    PowerToggleSystem _power;
-    MFDPotInteract[] _pots;
-    MFDButtonInteract[] _buttons;
-    MFDScreen _leftMFDCurrentScreen;
-    MFDScreen _centerMFDCurrentScreen;
-    MFDScreen _rightMFDCurrentScreen;
+public class MFDSystem{
+    PowerToggleSystem power;
+    MFDPotInteract[] pots;
+    MFDButtonInteract[] buttons;
+    MFDScreen leftMFDCurrentScreen;
+    MFDScreen centerMFDCurrentScreen;
+    MFDScreen rightMFDCurrentScreen;
 
     public event Action<MFD> OnIncreaseMFDBrightness;
     public event Action<MFD> OnDecreaseMFDBrightness;
@@ -24,14 +24,14 @@ public class MFDSystem : MonoBehaviour{
     public event Action OnRadarTiltUp;
     public event Action OnRadarTiltDown;
 
-    void Awake(){
-        _power = GetComponent<PowerToggleSystem>();
+    /*void Awake(){
+        power = GetComponent<PowerToggleSystem>();
         _pots = GetComponentsInChildren<MFDPotInteract>();
         _buttons = GetComponentsInChildren<MFDButtonInteract>();
         
-        _leftMFDCurrentScreen = MFDScreen.Main;
-        _centerMFDCurrentScreen = MFDScreen.Main;
-        _rightMFDCurrentScreen = MFDScreen.Main;
+        leftMFDCurrentScreen = MFDScreen.Main;
+        centerMFDCurrentScreen = MFDScreen.Main;
+        rightMFDCurrentScreen = MFDScreen.Main;
     }
     void OnEnable(){
         // Subscribe to interact events on all MFD Brightness Pots
@@ -42,42 +42,60 @@ public class MFDSystem : MonoBehaviour{
         for(int i = 0; i < _buttons.Length; i++){
             _buttons[i].OnInteract += ButtonInteract;
         }
+    }*/
+
+    public MFDSystem(PowerToggleSystem power, MFDPotInteract[] mfdPots, MFDButtonInteract[] mfdButtons){
+        this.power = power;
+        this.pots = mfdPots;
+        this.buttons = mfdButtons;
+
+        leftMFDCurrentScreen = MFDScreen.Main;
+        centerMFDCurrentScreen = MFDScreen.Main;
+        rightMFDCurrentScreen = MFDScreen.Main;
+
+        for(int i = 0; i < this.pots.Length; i++){
+            this.pots[i].OnInteract += IncreaseBrightness;
+            this.pots[i].OnInteractAlternate += DecreaseBrightness;
+        }
+        for(int i = 0; i < this.buttons.Length; i++){
+            this.buttons[i].OnInteract += ButtonInteract;
+        }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void IncreaseBrightness(MFD mfd){
-        if(_power.On){OnIncreaseMFDBrightness?.Invoke(mfd);}
+        if(power.On){OnIncreaseMFDBrightness?.Invoke(mfd);}
     }
     void DecreaseBrightness(MFD mfd){
-        if(_power.On){OnDecreaseMFDBrightness?.Invoke(mfd);}
+        if(power.On){OnDecreaseMFDBrightness?.Invoke(mfd);}
     }
 
     void ButtonInteract(MFD mfd, MFDRow row, int button){
-        if(_power.On == false) return;
+        if(power.On == false) return;
         
         if(row == MFDRow.Top){
             if(button == 1){}
             if(button == 2){}
             if(button == 3){
                 if(mfd == MFD.Left){
-                    if(_leftMFDCurrentScreen == MFDScreen.Main){
+                    if(leftMFDCurrentScreen == MFDScreen.Main){
                         OnActivateMFDRadarScreen?.Invoke(MFD.Left);
-                        _leftMFDCurrentScreen = MFDScreen.Radar;
+                        leftMFDCurrentScreen = MFDScreen.Radar;
                     }
-                    else if(_leftMFDCurrentScreen == MFDScreen.Radar){OnToggleRadarOrthoPersp?.Invoke();}
+                    else if(leftMFDCurrentScreen == MFDScreen.Radar){OnToggleRadarOrthoPersp?.Invoke();}
                 }
                 else if(mfd == MFD.Center){
-                    if(_centerMFDCurrentScreen == MFDScreen.Main){
+                    if(centerMFDCurrentScreen == MFDScreen.Main){
                         OnActivateMFDRadarScreen?.Invoke(MFD.Center);
-                        _centerMFDCurrentScreen = MFDScreen.Radar;
+                        centerMFDCurrentScreen = MFDScreen.Radar;
                     }
-                    else if(_centerMFDCurrentScreen == MFDScreen.Radar){OnToggleRadarOrthoPersp?.Invoke();}
+                    else if(centerMFDCurrentScreen == MFDScreen.Radar){OnToggleRadarOrthoPersp?.Invoke();}
                 }
                 else if(mfd == MFD.Right){
-                    if(_rightMFDCurrentScreen == MFDScreen.Main){
+                    if(rightMFDCurrentScreen == MFDScreen.Main){
                         OnActivateMFDRadarScreen?.Invoke(MFD.Right);
-                        _rightMFDCurrentScreen = MFDScreen.Radar;
+                        rightMFDCurrentScreen = MFDScreen.Radar;
                     }
-                    else if(_rightMFDCurrentScreen == MFDScreen.Radar){OnToggleRadarOrthoPersp?.Invoke();}
+                    else if(rightMFDCurrentScreen == MFDScreen.Radar){OnToggleRadarOrthoPersp?.Invoke();}
                 }
             }
             if(button == 4){}
@@ -87,45 +105,45 @@ public class MFDSystem : MonoBehaviour{
             if(button == 1){}
             if(button == 2){
                 if(mfd == MFD.Left){
-                    if(_leftMFDCurrentScreen == MFDScreen.Main){
+                    if(leftMFDCurrentScreen == MFDScreen.Main){
                         OnActivateMFDWeaponScreen?.Invoke(MFD.Left);
-                        _leftMFDCurrentScreen = MFDScreen.Weapon;
+                        leftMFDCurrentScreen = MFDScreen.Weapon;
                     }
                 }
                 else if(mfd == MFD.Center){
-                    if(_centerMFDCurrentScreen == MFDScreen.Main){
+                    if(centerMFDCurrentScreen == MFDScreen.Main){
                         OnActivateMFDWeaponScreen?.Invoke(MFD.Center);
-                        _centerMFDCurrentScreen = MFDScreen.Weapon;
+                        centerMFDCurrentScreen = MFDScreen.Weapon;
                     }
                 }
                 else if(mfd == MFD.Right){
-                    if(_rightMFDCurrentScreen == MFDScreen.Main){
+                    if(rightMFDCurrentScreen == MFDScreen.Main){
                         OnActivateMFDWeaponScreen?.Invoke(MFD.Right);
-                        _rightMFDCurrentScreen = MFDScreen.Weapon;
+                        rightMFDCurrentScreen = MFDScreen.Weapon;
                     }
                 }
             }
             if(button == 3){}
             if(button == 4){
                 if(mfd == MFD.Left){
-                    if(_leftMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltUp?.Invoke();}
+                    if(leftMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltUp?.Invoke();}
                 }
                 else if(mfd == MFD.Center){
-                    if(_centerMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltUp?.Invoke();}
+                    if(centerMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltUp?.Invoke();}
                 }
                 else if(mfd == MFD.Right){
-                    if(_rightMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltUp?.Invoke();}
+                    if(rightMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltUp?.Invoke();}
                 }
             }
             if(button == 5){
                 if(mfd == MFD.Left){
-                    if(_leftMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltDown?.Invoke();}
+                    if(leftMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltDown?.Invoke();}
                 }
                 else if(mfd == MFD.Center){
-                    if(_centerMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltDown?.Invoke();}
+                    if(centerMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltDown?.Invoke();}
                 }
                 else if(mfd == MFD.Right){
-                    if(_rightMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltDown?.Invoke();}
+                    if(rightMFDCurrentScreen == MFDScreen.Radar){OnRadarTiltDown?.Invoke();}
                 }
             }
         }
@@ -135,24 +153,24 @@ public class MFDSystem : MonoBehaviour{
             if(button == 3){}
             if(button == 4){
                 if(mfd == MFD.Left){
-                    if(_leftMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomIn?.Invoke();}
+                    if(leftMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomIn?.Invoke();}
                 }
                 else if(mfd == MFD.Center){
-                    if(_centerMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomIn?.Invoke();}
+                    if(centerMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomIn?.Invoke();}
                 }
                 else if(mfd == MFD.Right){
-                    if(_rightMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomIn?.Invoke();}
+                    if(rightMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomIn?.Invoke();}
                 }
             }
             if(button == 5){
                 if(mfd == MFD.Left){
-                    if(_leftMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomOut?.Invoke();}
+                    if(leftMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomOut?.Invoke();}
                 }
                 else if(mfd == MFD.Center){
-                    if(_centerMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomOut?.Invoke();}
+                    if(centerMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomOut?.Invoke();}
                 }
                 else if(mfd == MFD.Right){
-                    if(_rightMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomOut?.Invoke();}
+                    if(rightMFDCurrentScreen == MFDScreen.Radar){OnRadarZoomOut?.Invoke();}
                 }
             }
         }
@@ -161,33 +179,33 @@ public class MFDSystem : MonoBehaviour{
             if(button == 2){}
             if(button == 3){
                 if(mfd == MFD.Left){
-                    if(_leftMFDCurrentScreen == MFDScreen.Radar){
+                    if(leftMFDCurrentScreen == MFDScreen.Radar){
                         OnActivateMFDMainScreen?.Invoke(MFD.Left);
-                        _leftMFDCurrentScreen = MFDScreen.Main;
+                        leftMFDCurrentScreen = MFDScreen.Main;
                     }
-                    else if(_leftMFDCurrentScreen == MFDScreen.Weapon){
+                    else if(leftMFDCurrentScreen == MFDScreen.Weapon){
                         OnActivateMFDMainScreen?.Invoke(MFD.Left);
-                        _leftMFDCurrentScreen = MFDScreen.Main;
+                        leftMFDCurrentScreen = MFDScreen.Main;
                     }
                 }
                 if(mfd == MFD.Center){
-                    if(_centerMFDCurrentScreen == MFDScreen.Radar){
+                    if(centerMFDCurrentScreen == MFDScreen.Radar){
                         OnActivateMFDMainScreen?.Invoke(MFD.Center);
-                        _centerMFDCurrentScreen = MFDScreen.Main;
+                        centerMFDCurrentScreen = MFDScreen.Main;
                     }
-                    else if(_centerMFDCurrentScreen == MFDScreen.Weapon){
+                    else if(centerMFDCurrentScreen == MFDScreen.Weapon){
                         OnActivateMFDMainScreen?.Invoke(MFD.Center);
-                        _centerMFDCurrentScreen = MFDScreen.Main;
+                        centerMFDCurrentScreen = MFDScreen.Main;
                     }
                 }
                 if(mfd == MFD.Right){
-                    if(_rightMFDCurrentScreen == MFDScreen.Radar){
+                    if(rightMFDCurrentScreen == MFDScreen.Radar){
                         OnActivateMFDMainScreen?.Invoke(MFD.Right);
-                        _rightMFDCurrentScreen = MFDScreen.Main;
+                        rightMFDCurrentScreen = MFDScreen.Main;
                     }
-                    else if(_rightMFDCurrentScreen == MFDScreen.Weapon){
+                    else if(rightMFDCurrentScreen == MFDScreen.Weapon){
                         OnActivateMFDMainScreen?.Invoke(MFD.Right);
-                        _rightMFDCurrentScreen = MFDScreen.Main;
+                        rightMFDCurrentScreen = MFDScreen.Main;
                     }
                 }
             }
@@ -196,12 +214,12 @@ public class MFDSystem : MonoBehaviour{
         }
     }
     
-    void OnDisable(){for(int i = 0; i < _pots.Length; i++){
-            _pots[i].OnInteract -= IncreaseBrightness;
-            _pots[i].OnInteractAlternate -= DecreaseBrightness;
+    /*void OnDisable(){for(int i = 0; i < pots.Length; i++){
+            pots[i].OnInteract -= IncreaseBrightness;
+            pots[i].OnInteractAlternate -= DecreaseBrightness;
         }
-        for(int i = 0; i < _buttons.Length; i++){
-            _buttons[i].OnInteract -= ButtonInteract;
+        for(int i = 0; i < buttons.Length; i++){
+            buttons[i].OnInteract -= ButtonInteract;
         }
-    }
+    }*/
 }

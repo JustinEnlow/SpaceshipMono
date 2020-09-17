@@ -2,19 +2,12 @@
 using UnityEngine;
 
 public class BeamLaser : MonoBehaviour, IWeapon{
-    ShipStats _stats;
-    PowerToggleSystem _power;
-    MasterArmSystem _masterArm;
-    [SerializeField]InputController _input;
+    Ship ship;
     LineRenderer _line;
     bool _firing;
 
-    void Start(){
-        //var _ship = GetComponentInParent<ShipProcessExecutionController>();
-        _stats = GetComponentInParent<ShipStats>();//_ship._stats;
-        _power = GetComponentInParent<PowerToggleSystem>();
-        _masterArm = GetComponentInParent<MasterArmSystem>();
-        //_input = GetComponentInParent<InputController>();
+    void Awake(){
+        ship = GetComponentInParent<Ship>();
         
         _line = GetComponent<LineRenderer>();
 
@@ -24,15 +17,15 @@ public class BeamLaser : MonoBehaviour, IWeapon{
         _line.enabled = false;
     }
     void OnEnable(){
-        _input.OnFireWeapons += Fire;
-        _input.OnStopFiringWeapons += StopFiring;
+        ship.input.OnFireWeapons += Fire;
+        ship.input.OnStopFiringWeapons += StopFiring;
     }
 
     public void Fire(){_firing = true;}
     public void StopFiring(){_firing = false;}
 
     public void Update(){
-        if(_power.On && _masterArm.Armed && _firing){StartCoroutine("FireWeapon");}
+        if(ship.power.On && ship.masterArm.Armed && _firing){StartCoroutine("FireWeapon");}
         else{StopCoroutine("FireWeapon"); _line.enabled = false;}
     }
 
@@ -43,15 +36,15 @@ public class BeamLaser : MonoBehaviour, IWeapon{
 		    RaycastHit hit;
 		
 		    _line.SetPosition(0, transform.position);
-		    if(Physics.Raycast(ray, out hit, _stats.ShootDistance)){
+		    if(Physics.Raycast(ray, out hit, ship.stats.ShootDistance)){
                 Debug.DrawRay(transform.position, transform.TransformDirection
                     (Vector3.forward) * hit.distance, Color.yellow);
                 _line.SetPosition(1, hit.point);
                 
                 hit.collider.gameObject.GetComponentInParent<IHaveHealth>().ModifyHealth(
-                    -_stats.DamageAmount * Time.deltaTime);
+                    -ship.stats.DamageAmount * Time.deltaTime);
 		    }
-		    else{_line.SetPosition(1, ray.GetPoint(_stats.ShootDistance));}
+		    else{_line.SetPosition(1, ray.GetPoint(ship.stats.ShootDistance));}
 
             yield return null;
         }

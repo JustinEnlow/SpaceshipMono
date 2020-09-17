@@ -3,15 +3,14 @@ namespace Nlo.Math{
         public float Output{get; private set;}
         public float Integral{get; private set;}
         public float Error{get; private set;}
-        float _deltaTime;
 
-        public PID(float deltaTime){_deltaTime = deltaTime;}
+        public PID(){}
 
         public void Calculate(float setPoint, float measuredValue, float previousError, 
-            float previousIntegral, PIDGain gain){
+            float previousIntegral, PIDGain gain, float deltaTime){
                 var error = setPoint - measuredValue;
-                Integral = previousIntegral + error * _deltaTime;
-                var derivative = (error - previousError) / _deltaTime;      
+                Integral = previousIntegral + error * deltaTime;
+                var derivative = (error - previousError) / deltaTime;      
                 Error = error;
             
             Output = error * gain.p + Integral * gain.i + derivative * gain.d;

@@ -2,20 +2,20 @@ using UnityEngine;
 
 public class Radar : MonoBehaviour{ // all radar objects should be on "3dRadar" layer
     // we set baseBlipPrefab here so that we dont have to assign it on each RadarObject
-    MFDSystem mFDSystem;
+    Ship ship;
     [SerializeField]GameObject _baseBlipPrefab;
     Vector3 _baseBlipLocalPosition;
     [SerializeField]Camera radarCam;
     [SerializeField]Transform radarCameraTilt;
 
     void Awake(){
-        mFDSystem = GetComponent<MFDSystem>();
+        ship = GetComponent<Ship>();
 
-        mFDSystem.OnToggleRadarOrthoPersp += ToggleOrthoPersp;
-        mFDSystem.OnRadarZoomIn += ZoomIn;
-        mFDSystem.OnRadarZoomOut += ZoomOut;
-        mFDSystem.OnRadarTiltUp += TiltUp;
-        mFDSystem.OnRadarTiltDown += TiltDown;
+        ship.mfd.OnToggleRadarOrthoPersp += ToggleOrthoPersp;
+        ship.mfd.OnRadarZoomIn += ZoomIn;
+        ship.mfd.OnRadarZoomOut += ZoomOut;
+        ship.mfd.OnRadarTiltUp += TiltUp;
+        ship.mfd.OnRadarTiltDown += TiltDown;
     }
 
     void OnTriggerEnter(Collider other){

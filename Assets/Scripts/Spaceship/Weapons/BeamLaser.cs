@@ -25,7 +25,7 @@ public class BeamLaser : MonoBehaviour, IWeapon{
     public void StopFiring(){_firing = false;}
 
     public void Update(){
-        if(ship.power.On && ship.masterArm.Armed && _firing){StartCoroutine("FireWeapon");}
+        if(ship.power.Enabled && ship.masterArm.Enabled && _firing){StartCoroutine("FireWeapon");}
         else{StopCoroutine("FireWeapon"); _line.enabled = false;}
     }
 

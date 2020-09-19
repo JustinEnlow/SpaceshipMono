@@ -6,13 +6,10 @@ using Nlo.Tuning;
 public enum TuningPot{Parameter, Main, Value, Increment};
 public enum TuningParameter{PID, Thrust, Velocity};
 
-public class TuningSystem{
-    public ITune Tuning{get; private set;}
+public class Tuning{
+    public ITune tuning{get; private set;}
     
-    PowerToggleSystem power;
-    InputController input;
-    TuningPotInteract[] pots;
-    ShipStats stats;
+    Ship ship;
     
     PIDTuning pidLogic;
     ThrustTuning thrustLogic;
@@ -26,7 +23,7 @@ public class TuningSystem{
 
 
     /*void Awake(){
-        _power = GetComponent<PowerToggleSystem>();
+        _power = GetComponent<PowerToggle>();
         _input = GetComponentInChildren<InputController>();
         _pots = GetComponentsInChildren<TuningPotInteract>();
         var _stats = GetComponent<ShipStats>();
@@ -44,27 +41,24 @@ public class TuningSystem{
         }
     }*/
 
-    public TuningSystem(PowerToggleSystem power, InputController input, TuningPotInteract[] pots, ShipStats stats){
-        this.power = power;
-        this.input = input;
-        this.pots = pots;
-        this.stats = stats;
-        pidLogic = new PIDTuning(this.stats);
-        thrustLogic = new ThrustTuning(this.stats);
-        velocityLogic = new VelocityTuning(this.stats);
+    public Tuning(Ship ship){
+        this.ship = ship;
+        pidLogic = new PIDTuning(this.ship.stats);
+        thrustLogic = new ThrustTuning(this.ship.stats);
+        velocityLogic = new VelocityTuning(this.ship.stats);
 
         //UpdateTuningParameter();
 
-        this.input.OnTuningInteract += InteractResponse;
-        this.input.OnTuningInteractAlternate += InteractAlternateResponse;
-        for(int i = 0; i < this.pots.Length; i++){
-            this.pots[i].OnInteract += InteractResponse;
-            this.pots[i].OnInteractAlternate += InteractAlternateResponse;
+        this.ship.input.OnTuningInteract += InteractResponse;
+        this.ship.input.OnTuningInteractAlternate += InteractAlternateResponse;
+        for(int i = 0; i < this.ship.tuningPots.Length; i++){
+            this.ship.tuningPots[i].OnInteract += InteractResponse;
+            this.ship.tuningPots[i].OnInteractAlternate += InteractAlternateResponse;
         }
     }
 
     public void InteractResponse(TuningPot tuningPot){
-        if(power.On == false) return;
+        if(ship.power.Enabled == false) return;
 
         if(tuningPot == TuningPot.Parameter){
             if(currentParameter < TuningParameter.Velocity){
@@ -73,20 +67,20 @@ public class TuningSystem{
             UpdateTuningParameter();
         }
         if(tuningPot == TuningPot.Main){
-            Tuning.MainUp();
+            tuning.MainUp();
             TriggerUIUpdate();
         }
         if(tuningPot == TuningPot.Value){
-            Tuning.ValueUp();
+            tuning.ValueUp();
             TriggerUIUpdate();
         }
         if(tuningPot == TuningPot.Increment){
-            Tuning.IncrementUp();
+            tuning.IncrementUp();
             TriggerUIUpdate();
         }
     }
     public void InteractAlternateResponse(TuningPot tuningPot){
-        if(power.On == false) return;
+        if(ship.power.Enabled == false) return;
 
         if(tuningPot == TuningPot.Parameter){
             if(currentParameter > TuningParameter.PID){
@@ -95,31 +89,31 @@ public class TuningSystem{
             UpdateTuningParameter();
         }
         if(tuningPot == TuningPot.Main){
-            Tuning.MainDown();
+            tuning.MainDown();
             TriggerUIUpdate();
         }
         if(tuningPot == TuningPot.Value){
-            Tuning.ValueDown();
+            tuning.ValueDown();
             TriggerUIUpdate();
         }
         if(tuningPot == TuningPot.Increment){
-            Tuning.IncrementDown();
+            tuning.IncrementDown();
             TriggerUIUpdate();
         }
     }
     
     public void UpdateTuningParameter(){
-        if(currentParameter == TuningParameter.PID){Tuning = pidLogic;}
-        else if(currentParameter == TuningParameter.Thrust){Tuning = thrustLogic;}
-        else if(currentParameter == TuningParameter.Velocity){Tuning = velocityLogic;}
+        if(currentParameter == TuningParameter.PID){tuning = pidLogic;}
+        else if(currentParameter == TuningParameter.Thrust){tuning = thrustLogic;}
+        else if(currentParameter == TuningParameter.Velocity){tuning = velocityLogic;}
             
         TriggerUIUpdate();
     }
 
     void TriggerUIUpdate(){
-        OnNameChanged?.Invoke(Tuning.Name);
-        OnValueChanged?.Invoke(Tuning.Value);
-        OnIncrementChanged?.Invoke(Tuning.Increment);
+        OnNameChanged?.Invoke(tuning.Name);
+        OnValueChanged?.Invoke(tuning.Value);
+        OnIncrementChanged?.Invoke(tuning.Increment);
     }
     
     /*void OnDisable(){

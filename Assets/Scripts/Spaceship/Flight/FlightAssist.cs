@@ -2,7 +2,7 @@
 using Nlo.Math;
 
 //namespace Nlo.Flight{
-    public class FlightAssistSystem{
+    public class FlightAssist{
         Ship ship;
         PID pid;
         
@@ -18,7 +18,7 @@ using Nlo.Math;
 
         const float _radiansToDegreesMultiplier = (180 / Mathf.PI);
 
-        public FlightAssistSystem(Ship ship){
+        public FlightAssist(Ship ship){
             this.ship = ship;
             pid = new PID();
 
@@ -38,7 +38,7 @@ using Nlo.Math;
         void UpdateRollInput(float value){RollInput = value;}
 
         public void Process(float deltaTime){
-            if(ship.power.On == false) return;
+            if(ship.power.Enabled == false) return;
             
             // convert velocities from world space to local
             LinearVelocity = ship.rb.transform.InverseTransformVector(ship.rb.velocity);

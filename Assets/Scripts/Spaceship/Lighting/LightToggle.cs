@@ -3,9 +3,8 @@ using UnityEngine;
 
 public enum Light{Flood, Position, Strobe};
 
-public class LightToggleSystem{
-    InputController input;
-    LightsInteract[] lights;
+public class LightToggle{
+    Ship ship;
     
     public bool FloodLightsOn{get; private set;}
     public bool PositionLightsOn{get; private set;}
@@ -26,13 +25,12 @@ public class LightToggleSystem{
         }
     }*/
 
-    public LightToggleSystem(InputController input, LightsInteract[] lights){
-        this.input = input;
-        this.lights = lights;
+    public LightToggle(Ship ship){
+        this.ship = ship;
 
-        this.input.OnToggleLights += ToggleLights;
-        for(int i = 0; i < this.lights.Length; i++){
-            this.lights[i].OnInteract += ToggleLights;
+        this.ship.input.OnToggleLights += ToggleLights;
+        for(int i = 0; i < this.ship.lights.Length; i++){
+            this.ship.lights[i].OnInteract += ToggleLights;
         }
     }
     

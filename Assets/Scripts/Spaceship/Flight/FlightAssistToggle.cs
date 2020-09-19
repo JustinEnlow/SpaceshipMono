@@ -2,9 +2,8 @@
 using System;
 using UnityEngine;
 
-public class FlightAssistToggleSystem{
-    PowerToggleSystem power;
-    InputController input;
+public class FlightAssistToggle{
+    Ship ship;
     
     public bool TranslationAssistEnabled{get; private set;}
     public bool RotationAssistEnabled{get; private set;}
@@ -12,31 +11,31 @@ public class FlightAssistToggleSystem{
     public event Action OnTranslationAssistToggled;
     public event Action OnRotationAssistToggled;
 
-    public FlightAssistToggleSystem(PowerToggleSystem power, InputController input){
-        this.power = power;
-        this.input = input;
+    public FlightAssistToggle(Ship ship){
+        this.ship = ship;
+
         TranslationAssistEnabled = true;
         RotationAssistEnabled = true;
 
-        input.OnToggleTranslationAssist += TranslationAssistToggle;
-        input.OnToggleRotationAssist += RotationAssistToggle;
+        this.ship.input.OnToggleTranslationAssist += TranslationAssistToggle;
+        this.ship.input.OnToggleRotationAssist += RotationAssistToggle;
     }
 
     public void TranslationAssistToggle(){
-        if(power.On){
+        if(ship.power.Enabled){
             TranslationAssistEnabled = !TranslationAssistEnabled;
             OnTranslationAssistToggled?.Invoke();
         }
     }
     public void RotationAssistToggle(){
-        if(power.On){
+        if(ship.power.Enabled){
             RotationAssistEnabled = !RotationAssistEnabled;
             OnRotationAssistToggled?.Invoke();
         }
     }
 
-    ~FlightAssistToggleSystem(){
-        input.OnToggleTranslationAssist -= TranslationAssistToggle;
-        input.OnToggleRotationAssist -= RotationAssistToggle;
+    ~FlightAssistToggle(){
+        ship.input.OnToggleTranslationAssist -= TranslationAssistToggle;
+        ship.input.OnToggleRotationAssist -= RotationAssistToggle;
     }
 }

@@ -260,6 +260,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a09be20a68116f240aa871f8fa78991e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1434720522 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 853354240138224603, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1702417195}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1674571612
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,6 +463,11 @@ PrefabInstance:
       propertyPath: radarCameraTilt
       value: 
       objectReference: {fileID: 145852719}
+    - target: {fileID: 7987593523092535926, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+        type: 3}
+      propertyPath: FighterUIGameObject
+      value: 
+      objectReference: {fileID: 1434720522}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 63e57b24dfd7cb0499613fd44b7c23d7, type: 3}
 --- !u!1 &1998393690

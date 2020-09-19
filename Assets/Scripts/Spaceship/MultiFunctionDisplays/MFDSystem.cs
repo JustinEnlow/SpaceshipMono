@@ -6,9 +6,7 @@ public enum MFDRow{Top, Left, Right, Bottom};
 public enum MFDScreen{Main, Radar, Weapon};
 
 public class MFDSystem{
-    PowerToggleSystem power;
-    MFDPotInteract[] pots;
-    MFDButtonInteract[] buttons;
+    Ship ship;
     MFDScreen leftMFDCurrentScreen;
     MFDScreen centerMFDCurrentScreen;
     MFDScreen rightMFDCurrentScreen;
@@ -25,7 +23,7 @@ public class MFDSystem{
     public event Action OnRadarTiltDown;
 
     /*void Awake(){
-        power = GetComponent<PowerToggleSystem>();
+        ship.power = GetComponent<PowerToggle>();
         _pots = GetComponentsInChildren<MFDPotInteract>();
         _buttons = GetComponentsInChildren<MFDButtonInteract>();
         
@@ -44,33 +42,31 @@ public class MFDSystem{
         }
     }*/
 
-    public MFDSystem(PowerToggleSystem power, MFDPotInteract[] mfdPots, MFDButtonInteract[] mfdButtons){
-        this.power = power;
-        this.pots = mfdPots;
-        this.buttons = mfdButtons;
+    public MFDSystem(Ship ship){
+        this.ship = ship;
 
         leftMFDCurrentScreen = MFDScreen.Main;
         centerMFDCurrentScreen = MFDScreen.Main;
         rightMFDCurrentScreen = MFDScreen.Main;
 
-        for(int i = 0; i < this.pots.Length; i++){
-            this.pots[i].OnInteract += IncreaseBrightness;
-            this.pots[i].OnInteractAlternate += DecreaseBrightness;
+        for(int i = 0; i < this.ship.mfdPots.Length; i++){
+            this.ship.mfdPots[i].OnInteract += IncreaseBrightness;
+            this.ship.mfdPots[i].OnInteractAlternate += DecreaseBrightness;
         }
-        for(int i = 0; i < this.buttons.Length; i++){
-            this.buttons[i].OnInteract += ButtonInteract;
+        for(int i = 0; i < this.ship.mfdButtons.Length; i++){
+            this.ship.mfdButtons[i].OnInteract += ButtonInteract;
         }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void IncreaseBrightness(MFD mfd){
-        if(power.On){OnIncreaseMFDBrightness?.Invoke(mfd);}
+        if(ship.power.Enabled){OnIncreaseMFDBrightness?.Invoke(mfd);}
     }
     void DecreaseBrightness(MFD mfd){
-        if(power.On){OnDecreaseMFDBrightness?.Invoke(mfd);}
+        if(ship.power.Enabled){OnDecreaseMFDBrightness?.Invoke(mfd);}
     }
 
     void ButtonInteract(MFD mfd, MFDRow row, int button){
-        if(power.On == false) return;
+        if(ship.power.Enabled == false) return;
         
         if(row == MFDRow.Top){
             if(button == 1){}
@@ -214,12 +210,12 @@ public class MFDSystem{
         }
     }
     
-    /*void OnDisable(){for(int i = 0; i < pots.Length; i++){
-            pots[i].OnInteract -= IncreaseBrightness;
-            pots[i].OnInteractAlternate -= DecreaseBrightness;
+    /*void OnDisable(){for(int i = 0; i < ship.mfdPots.Length; i++){
+            ship.mfdPots[i].OnInteract -= IncreaseBrightness;
+            ship.mfdPots[i].OnInteractAlternate -= DecreaseBrightness;
         }
-        for(int i = 0; i < buttons.Length; i++){
-            buttons[i].OnInteract -= ButtonInteract;
+        for(int i = 0; i < ship.mfdButtons.Length; i++){
+            ship.mfdButtons[i].OnInteract -= ButtonInteract;
         }
     }*/
 }

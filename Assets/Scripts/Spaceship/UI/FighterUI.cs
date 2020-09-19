@@ -2,10 +2,10 @@
 using TMPro;
 using Nlo.Tuning;
 
-public class FighterUISystem : MonoBehaviour{
+public class FighterUI : MonoBehaviour{
     Ship ship;
     
-    [SerializeField]GameObject FighterUI;
+    [SerializeField]GameObject FighterUIGameObject;
     [SerializeField]GameObject TranslationAssistWarning;
     [SerializeField]GameObject RotationAssistWarning;
     [SerializeField]TextMeshProUGUI TuningName;
@@ -41,14 +41,14 @@ public class FighterUISystem : MonoBehaviour{
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void UpdateTranslationAssistWarning(){
-        TranslationAssistWarning.SetActive(ship.assistToggle.TranslationAssistEnabled == false && ship.power.On);
+        TranslationAssistWarning.SetActive(ship.assistToggle.TranslationAssistEnabled == false && ship.power.Enabled);
     }
     void UpdateRotationAssistWarning(){
-        RotationAssistWarning.SetActive(ship.assistToggle.RotationAssistEnabled == false && ship.power.On);
+        RotationAssistWarning.SetActive(ship.assistToggle.RotationAssistEnabled == false && ship.power.Enabled);
     }
 
     void UpdatePowerStatus(){
-        FighterUI.SetActive(ship.power.On);
+        FighterUIGameObject.SetActive(ship.power.Enabled);
         UpdateTranslationAssistWarning();
         UpdateRotationAssistWarning();
     }

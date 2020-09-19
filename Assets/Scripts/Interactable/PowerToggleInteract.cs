@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PowerToggleClick : MonoBehaviour, IInteractable{
+public class PowerToggleInteract : MonoBehaviour, IInteractable{
 
     public event Action OnInteract;
 

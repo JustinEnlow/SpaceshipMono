@@ -3,11 +3,7 @@ using Nlo.Math;
 
 //namespace Nlo.Flight{
     public class FlightAssistSystem{
-        Rigidbody rb;
-        ShipStats stats;
-        PowerToggleSystem power;
-        FlightAssistToggleSystem assist;
-        InputController input;
+        Ship ship;
         PID pid;
         
         [SerializeField]Vector3 LinearVelocity, AngularVelocity;
@@ -22,22 +18,16 @@ using Nlo.Math;
 
         const float _radiansToDegreesMultiplier = (180 / Mathf.PI);
 
-        public FlightAssistSystem(Rigidbody rb, ShipStats stats, PowerToggleSystem power, FlightAssistToggleSystem assist,
-            InputController input, float deltaTime){
-
-            this.rb = rb;
-            this.stats = stats;
-            this.power = power;
-            this.assist = assist;
-            this.input = input;
+        public FlightAssistSystem(Ship ship){
+            this.ship = ship;
             pid = new PID();
 
-            input.OnLateralInputChanged += UpdateLateralInput;
-            input.OnVerticalInputChanged += UpdateVerticalInput;
-            input.OnLongitudinalInputChanged += UpdateLongitudinalInput;
-            input.OnPitchInputChanged += UpdatePitchInput;
-            input.OnYawInputChanged += UpdateYawInput;
-            input.OnRollInputChanged += UpdateRollInput;
+            this.ship.input.OnLateralInputChanged += UpdateLateralInput;
+            this.ship.input.OnVerticalInputChanged += UpdateVerticalInput;
+            this.ship.input.OnLongitudinalInputChanged += UpdateLongitudinalInput;
+            this.ship.input.OnPitchInputChanged += UpdatePitchInput;
+            this.ship.input.OnYawInputChanged += UpdateYawInput;
+            this.ship.input.OnRollInputChanged += UpdateRollInput;
         }
 
         void UpdateLateralInput(float value){LateralInput = value;}
@@ -48,34 +38,34 @@ using Nlo.Math;
         void UpdateRollInput(float value){RollInput = value;}
 
         public void Process(float deltaTime){
-            if(power.On == false) return;
+            if(ship.power.On == false) return;
             
             // convert velocities from world space to local
-            LinearVelocity = rb.transform.InverseTransformVector(rb.velocity);
+            LinearVelocity = ship.rb.transform.InverseTransformVector(ship.rb.velocity);
                 //use degrees instead of radians
-            AngularVelocity = rb.transform.InverseTransformVector(rb.angularVelocity) * _radiansToDegreesMultiplier;
+            AngularVelocity = ship.rb.transform.InverseTransformVector(ship.rb.angularVelocity) * _radiansToDegreesMultiplier;
 
             /*
             Target velocity is specified by multiplying max velocity by player input
             The pid controller determines how much output we need to feed to the thrust system to reduce the difference between target 
             velocity and current velocity
             */
-            if(assist.TranslationAssistEnabled){
-                pid.Calculate(stats.LateralMaxVelocity * LateralInput, LinearVelocity.x, 
-                    LinearErrorX, LinearIntegralX, stats.LinearGainX, deltaTime);
-                LinearOutputX = Clamp.Float((pid.Output / stats.LateralMaxVelocity), -1f, 1f);
+            if(ship.assistToggle.TranslationAssistEnabled){
+                pid.Calculate(ship.stats.LateralMaxVelocity * LateralInput, LinearVelocity.x, 
+                    LinearErrorX, LinearIntegralX, ship.stats.LinearGainX, deltaTime);
+                LinearOutputX = Clamp.Float((pid.Output / ship.stats.LateralMaxVelocity), -1f, 1f);
                 LinearErrorX = pid.Error;
                 LinearIntegralX = pid.Integral;
                     
-                pid.Calculate(stats.VerticalMaxVelocity * VerticalInput, LinearVelocity.y, 
-                    LinearErrorY, LinearIntegralY, stats.LinearGainY, deltaTime);
-                LinearOutputY = Clamp.Float((pid.Output / stats.VerticalMaxVelocity), -1f, 1f);
+                pid.Calculate(ship.stats.VerticalMaxVelocity * VerticalInput, LinearVelocity.y, 
+                    LinearErrorY, LinearIntegralY, ship.stats.LinearGainY, deltaTime);
+                LinearOutputY = Clamp.Float((pid.Output / ship.stats.VerticalMaxVelocity), -1f, 1f);
                 LinearErrorY = pid.Error;
                 LinearIntegralY = pid.Integral;
                     
-                pid.Calculate(stats.LongitudinalMaxVelocity * LongitudinalInput, LinearVelocity.z, 
-                    LinearErrorZ, LinearIntegralZ, stats.LinearGainZ, deltaTime);
-                LinearOutputZ = Clamp.Float((pid.Output / stats.LongitudinalMaxVelocity), -1f, 1f);
+                pid.Calculate(ship.stats.LongitudinalMaxVelocity * LongitudinalInput, LinearVelocity.z, 
+                    LinearErrorZ, LinearIntegralZ, ship.stats.LinearGainZ, deltaTime);
+                LinearOutputZ = Clamp.Float((pid.Output / ship.stats.LongitudinalMaxVelocity), -1f, 1f);
                 LinearErrorZ = pid.Error;
                 LinearIntegralZ = pid.Integral;
             }
@@ -89,32 +79,32 @@ using Nlo.Math;
                 LinearOutputZ = LongitudinalInput;
 
                     //prevent ship from exceeding max velocity
-                if(LinearVelocity.x >=  stats.LateralMaxVelocity && LateralInput > 0){LinearOutputX = 0;}
-                if(LinearVelocity.x <= -stats.LateralMaxVelocity && LateralInput < 0){LinearOutputX = 0;}
+                if(LinearVelocity.x >=  ship.stats.LateralMaxVelocity && LateralInput > 0){LinearOutputX = 0;}
+                if(LinearVelocity.x <= -ship.stats.LateralMaxVelocity && LateralInput < 0){LinearOutputX = 0;}
                     
-                if(LinearVelocity.y >=  stats.VerticalMaxVelocity && VerticalInput > 0){LinearOutputY = 0;}
-                if(LinearVelocity.y <= -stats.VerticalMaxVelocity && VerticalInput < 0){LinearOutputY = 0;}
+                if(LinearVelocity.y >=  ship.stats.VerticalMaxVelocity && VerticalInput > 0){LinearOutputY = 0;}
+                if(LinearVelocity.y <= -ship.stats.VerticalMaxVelocity && VerticalInput < 0){LinearOutputY = 0;}
                     
-                if(LinearVelocity.z >=  stats.LongitudinalMaxVelocity && LongitudinalInput > 0){LinearOutputZ = 0;}
-                if(LinearVelocity.z <= -stats.LongitudinalMaxVelocity && LongitudinalInput < 0){LinearOutputZ = 0;}        
+                if(LinearVelocity.z >=  ship.stats.LongitudinalMaxVelocity && LongitudinalInput > 0){LinearOutputZ = 0;}
+                if(LinearVelocity.z <= -ship.stats.LongitudinalMaxVelocity && LongitudinalInput < 0){LinearOutputZ = 0;}        
             }
                 
-            if(assist.RotationAssistEnabled){
-                pid.Calculate(stats.PitchMaxVelocity * PitchInput, AngularVelocity.x, 
-                    AngularErrorX, AngularIntegralX, stats.AngularGainX, deltaTime);
-                AngularOutputX = Clamp.Float((pid.Output / stats.PitchMaxVelocity), -1f, 1f);
+            if(ship.assistToggle.RotationAssistEnabled){
+                pid.Calculate(ship.stats.PitchMaxVelocity * PitchInput, AngularVelocity.x, 
+                    AngularErrorX, AngularIntegralX, ship.stats.AngularGainX, deltaTime);
+                AngularOutputX = Clamp.Float((pid.Output / ship.stats.PitchMaxVelocity), -1f, 1f);
                 AngularErrorX = pid.Error;
                 AngularIntegralX = pid.Integral;
                     
-                pid.Calculate(stats.YawMaxVelocity * YawInput, AngularVelocity.y, 
-                    AngularErrorY, AngularIntegralY, stats.AngularGainY, deltaTime);
-                AngularOutputY = Clamp.Float((pid.Output / stats.YawMaxVelocity), -1f, 1f);
+                pid.Calculate(ship.stats.YawMaxVelocity * YawInput, AngularVelocity.y, 
+                    AngularErrorY, AngularIntegralY, ship.stats.AngularGainY, deltaTime);
+                AngularOutputY = Clamp.Float((pid.Output / ship.stats.YawMaxVelocity), -1f, 1f);
                 AngularErrorY = pid.Error;
                 AngularIntegralY = pid.Integral;
                     
-                pid.Calculate(stats.RollMaxVelocity * RollInput, AngularVelocity.z, 
-                    AngularErrorZ, AngularIntegralZ, stats.AngularGainZ, deltaTime);
-                AngularOutputZ = Clamp.Float((pid.Output / stats.RollMaxVelocity), -1f, 1f);
+                pid.Calculate(ship.stats.RollMaxVelocity * RollInput, AngularVelocity.z, 
+                    AngularErrorZ, AngularIntegralZ, ship.stats.AngularGainZ, deltaTime);
+                AngularOutputZ = Clamp.Float((pid.Output / ship.stats.RollMaxVelocity), -1f, 1f);
                 AngularErrorZ = pid.Error;
                 AngularIntegralZ = pid.Integral;
             }
@@ -123,26 +113,26 @@ using Nlo.Math;
                 AngularOutputY = YawInput;
                 AngularOutputZ = RollInput;
                     
-                if(AngularVelocity.x >=  stats.PitchMaxVelocity && PitchInput > 0){AngularOutputX = 0;}
-                if(AngularVelocity.x <= -stats.PitchMaxVelocity && PitchInput < 0){AngularOutputX = 0;}
+                if(AngularVelocity.x >=  ship.stats.PitchMaxVelocity && PitchInput > 0){AngularOutputX = 0;}
+                if(AngularVelocity.x <= -ship.stats.PitchMaxVelocity && PitchInput < 0){AngularOutputX = 0;}
                     
-                if(AngularVelocity.y >=  stats.YawMaxVelocity && YawInput > 0){AngularOutputY = 0;}
-                if(AngularVelocity.y <= -stats.YawMaxVelocity && YawInput < 0){AngularOutputY = 0;}
+                if(AngularVelocity.y >=  ship.stats.YawMaxVelocity && YawInput > 0){AngularOutputY = 0;}
+                if(AngularVelocity.y <= -ship.stats.YawMaxVelocity && YawInput < 0){AngularOutputY = 0;}
                     
-                if(AngularVelocity.z >=  stats.RollMaxVelocity && RollInput > 0){AngularOutputZ = 0;}
-                if(AngularVelocity.z <= -stats.RollMaxVelocity && RollInput < 0){AngularOutputZ = 0;}
+                if(AngularVelocity.z >=  ship.stats.RollMaxVelocity && RollInput > 0){AngularOutputZ = 0;}
+                if(AngularVelocity.z <= -ship.stats.RollMaxVelocity && RollInput < 0){AngularOutputZ = 0;}
             }
 
             // output necessary values to unity physics system
-            rb.AddRelativeForce(
-                LinearOutputX * stats.LateralDesiredThrust, 
-                LinearOutputY * stats.VerticalDesiredThrust, 
-                LinearOutputZ * stats.LongitudinalDesiredThrust, 
+            ship.rb.AddRelativeForce(
+                LinearOutputX * ship.stats.LateralDesiredThrust, 
+                LinearOutputY * ship.stats.VerticalDesiredThrust, 
+                LinearOutputZ * ship.stats.LongitudinalDesiredThrust, 
                 ForceMode.Force);
-            rb.AddRelativeTorque(
-                AngularOutputX * stats.PitchDesiredThrust, 
-                AngularOutputY * stats.YawDesiredThrust, 
-                AngularOutputZ * stats.RollDesiredThrust, 
+            ship.rb.AddRelativeTorque(
+                AngularOutputX * ship.stats.PitchDesiredThrust, 
+                AngularOutputY * ship.stats.YawDesiredThrust, 
+                AngularOutputZ * ship.stats.RollDesiredThrust, 
                 ForceMode.Force);
         }
     }

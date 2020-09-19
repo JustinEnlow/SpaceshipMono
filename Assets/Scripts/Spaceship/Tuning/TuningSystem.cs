@@ -53,7 +53,7 @@ public class TuningSystem{
         thrustLogic = new ThrustTuning(this.stats);
         velocityLogic = new VelocityTuning(this.stats);
 
-        UpdateTuningParameter();
+        //UpdateTuningParameter();
 
         this.input.OnTuningInteract += InteractResponse;
         this.input.OnTuningInteractAlternate += InteractAlternateResponse;
@@ -108,7 +108,7 @@ public class TuningSystem{
         }
     }
     
-    void UpdateTuningParameter(){
+    public void UpdateTuningParameter(){
         if(currentParameter == TuningParameter.PID){Tuning = pidLogic;}
         else if(currentParameter == TuningParameter.Thrust){Tuning = thrustLogic;}
         else if(currentParameter == TuningParameter.Velocity){Tuning = velocityLogic;}

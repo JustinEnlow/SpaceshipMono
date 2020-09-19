@@ -10,8 +10,9 @@ public class FighterAnimationSystem : MonoBehaviour{
     [SerializeField]Renderer positionMeshRendererLeft, positionMeshRendererRight;
     [SerializeField]Renderer strobeMeshRenderer;
 
-    void Awake(){ship = GetComponent<Ship>();}
-    void OnEnable(){
+
+    public void Initialize(Ship ship){this.ship = ship;}
+    public void Enable(){
         ship.power.OnPowerToggled += AnimatePowerSwitch;
         ship.masterArm.OnMasterArmToggled += AnimateMasterArmSwitch;
         ship.lightToggle.OnFloodLightsToggled += AnimateFloodSwitch;
@@ -30,9 +31,7 @@ public class FighterAnimationSystem : MonoBehaviour{
         UpdateStrobeLights();
     }
 
-    void AnimateMasterArmSwitch(){
-        RotateSwitch(ship.masterArm.Armed, MasterArmSwitchMesh);
-    }
+    void AnimateMasterArmSwitch(){RotateSwitch(ship.masterArm.Armed, MasterArmSwitchMesh);}
 
     void AnimateFloodSwitch(){RotateSwitch(ship.lightToggle.FloodLightsOn, floodSwitchMesh);}
     void UpdateFloodLights(){floodLights.SetActive(ship.lightToggle.FloodLightsOn && ship.power.On);}
@@ -60,7 +59,7 @@ public class FighterAnimationSystem : MonoBehaviour{
         }
         strobeLights.SetActive(ship.lightToggle.StrobeLightsOn && ship.power.On);
     }
-
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
     void RotateSwitch(bool on, GameObject switchMesh){
         if(on == true) {switchMesh.transform.Rotate( 60, 0, 0);}
         if(on == false){switchMesh.transform.Rotate(-60, 0, 0);}

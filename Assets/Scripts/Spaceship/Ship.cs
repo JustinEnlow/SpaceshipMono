@@ -19,6 +19,9 @@ public class Ship : MonoBehaviour{
     public FlightAssistToggleSystem assistToggle;
     public FlightAssistSystem assist;
 
+    FighterAnimationSystem fighterAnim;
+    FighterUISystem fighterUI;
+
     void Awake(){
         stats = new ShipStats(100f, 0f, 25f, 25f, 25f, 75f, 75f, 75f, 30000f, 30000f, 30000f, 30000f, 30000f, 30000f, 100, 10f, 
             100f, 0f, 0f, 100f, 0f, 0f, 100f, 0f, 0f, 1f, 0f, 0f, 1f, 0f, 0f, 1f, 0f, 0f);
@@ -34,11 +37,21 @@ public class Ship : MonoBehaviour{
         masterArm = new MasterArmSystem(input, masterArmInteract);
 
         
-        assist = new FlightAssistSystem(rb, stats, power, assistToggle, input, Time.fixedDeltaTime);
+        assist = new FlightAssistSystem(this);
         lightToggle = new LightToggleSystem(input, lights);
         tuning = new TuningSystem(power, input, tuningPots, stats);
         mfd = new MFDSystem(power, mfdPots, mfdButtons);
+
+        fighterAnim = GetComponent<FighterAnimationSystem>();
+        fighterAnim.Initialize(this);
+        fighterUI = GetComponent<FighterUISystem>();
+        fighterUI.Initialize(this);
     }
+    void OnEnable(){
+        fighterAnim.Enable();
+        fighterUI.Enable();
+    }
+    void Start(){tuning.UpdateTuningParameter();}
 
     void FixedUpdate(){assist.Process(Time.fixedDeltaTime);}
 }

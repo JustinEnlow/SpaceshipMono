@@ -551,9 +551,9 @@ GameObject:
   - component: {fileID: 853354238451779703}
   - component: {fileID: 853354238229259019}
   - component: {fileID: 6850094551474726382}
+  - component: {fileID: 3434831503627570102}
   - component: {fileID: 7987593523092535926}
   - component: {fileID: 2952846218972267251}
-  - component: {fileID: 3434831503627570102}
   m_Layer: 0
   m_Name: x37 fighter
   m_TagString: Player
@@ -627,6 +627,20 @@ MonoBehaviour:
     type: 3}
   radarCam: {fileID: 0}
   radarCameraTilt: {fileID: 0}
+--- !u!114 &3434831503627570102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853354238451779608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d45018880da3674098f61e6db67b37d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 853354238451779703}
+  input: {fileID: 853354239853112830}
 --- !u!114 &7987593523092535926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -680,18 +694,6 @@ MonoBehaviour:
   positionMeshRendererLeft: {fileID: 8818309728541169402}
   positionMeshRendererRight: {fileID: 2559108523628205953}
   strobeMeshRenderer: {fileID: 106163434735375162}
---- !u!114 &3434831503627570102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 853354238451779608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d45018880da3674098f61e6db67b37d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &853354238486808574
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ public class Radar : MonoBehaviour{ // all radar objects should be on "3dRadar" 
     [SerializeField]Camera radarCam;
     [SerializeField]Transform radarCameraTilt;
 
-    void Awake(){
+    void Start(){
         ship = GetComponent<Ship>();
 
         ship.mfd.OnToggleRadarOrthoPersp += ToggleOrthoPersp;

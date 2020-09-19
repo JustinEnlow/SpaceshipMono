@@ -24,8 +24,9 @@ public class FighterUISystem : MonoBehaviour{
     [SerializeField]GameObject RightMFDRadarScreen;
     [SerializeField]GameObject RightMFDWeaponScreen;
 
-    void Awake(){ship = GetComponent<Ship>();}
-    void OnEnable(){
+
+    public void Initialize(Ship ship){this.ship = ship;}
+    public void Enable(){
         ship.power.OnPowerToggled += UpdatePowerStatus;
         ship.assistToggle.OnTranslationAssistToggled += UpdateTranslationAssist;
         ship.assistToggle.OnRotationAssistToggled += UpdateRotationAssist;

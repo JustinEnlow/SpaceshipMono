@@ -125,6 +125,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!4 &145852719 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 853354239939649812, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1702417195}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &417694298 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3434831503627570102, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
@@ -140,6 +146,12 @@ MonoBehaviour:
 --- !u!54 &417694308 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 853354238451779703, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1702417195}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &596970367 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 853354238644400564, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
     type: 3}
   m_PrefabInstance: {fileID: 1702417195}
   m_PrefabAsset: {fileID: 0}
@@ -415,6 +427,11 @@ PrefabInstance:
       propertyPath: ship
       value: 
       objectReference: {fileID: 417694298}
+    - target: {fileID: 2952846218972267251, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+        type: 3}
+      propertyPath: ship
+      value: 
+      objectReference: {fileID: 417694298}
     - target: {fileID: 3434831503627570102, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
         type: 3}
       propertyPath: rb
@@ -430,6 +447,16 @@ PrefabInstance:
       propertyPath: ship
       value: 
       objectReference: {fileID: 417694298}
+    - target: {fileID: 6850094551474726382, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+        type: 3}
+      propertyPath: radarCam
+      value: 
+      objectReference: {fileID: 596970367}
+    - target: {fileID: 6850094551474726382, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+        type: 3}
+      propertyPath: radarCameraTilt
+      value: 
+      objectReference: {fileID: 145852719}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 63e57b24dfd7cb0499613fd44b7c23d7, type: 3}
 --- !u!1 &1998393690

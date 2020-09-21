@@ -1,20 +1,18 @@
 using UnityEngine;
+using Nlo.Spaceship;
+using Nlo.Spaceship.Interfaces;
 
 public class Ship : MonoBehaviour{
-    public Rigidbody rb;
-    public InputController input;
+    [HideInInspector]public Rigidbody rb;
+    public ShipEventManager eventManager;
     public ShipStats stats;
     public PowerToggle power;
-    public PowerToggleInteract powerToggleInteract;
     public MasterArm masterArm;
-    public MasterArmInteract masterArmInteract;
     public LightToggle lightToggle;
-    public LightsInteract[] lights;
     public Tuning tuning;
-    public TuningPotInteract[] tuningPots;
     public MFDSystem mfd;
-    public MFDPotInteract[] mfdPots;
-    public MFDButtonInteract[] mfdButtons;
+    IWeapon[] weapons;
+    WeaponSystem weaponSystem;
 
     public FlightAssistToggle assistToggle;
     public FlightAssist assist;
@@ -23,24 +21,28 @@ public class Ship : MonoBehaviour{
     FighterUI fighterUI;
 
     void Awake(){
-        stats = new ShipStats(100f, 0f, 25f, 25f, 25f, 75f, 75f, 75f, 30000f, 30000f, 30000f, 30000f, 30000f, 30000f, 100, 10f, 
-            100f, 0f, 0f, 100f, 0f, 0f, 100f, 0f, 0f, 1f, 0f, 0f, 1f, 0f, 0f, 1f, 0f, 0f);
-        powerToggleInteract = gameObject.GetComponentInChildren<PowerToggleInteract>();
-        masterArmInteract = gameObject.GetComponentInChildren<MasterArmInteract>();
-        lights = gameObject.GetComponentsInChildren<LightsInteract>();
-        tuningPots = gameObject.GetComponentsInChildren<TuningPotInteract>();
-        mfdPots = gameObject.GetComponentsInChildren<MFDPotInteract>();
-        mfdButtons = gameObject.GetComponentsInChildren<MFDButtonInteract>();
+        rb = GetComponent<Rigidbody>();
+        eventManager = new ShipEventManager();
+        stats = new ShipStats(25f, 25f, 25f, 75f, 75f, 75f, 30000f, 30000f, 30000f, 30000f, 30000f, 30000f, 100f, 0f, 0f, 100f, 0f, 0f, 
+            100f, 0f, 0f, 1f, 0f, 0f, 1f, 0f, 0f, 1f, 0f, 0f);
 
-        power = new PowerToggle(this);
-        assistToggle = new FlightAssistToggle(this);
-        masterArm = new MasterArm(this);
+        power = new PowerToggle(eventManager);
+        assistToggle = new FlightAssistToggle(eventManager, power);
+        masterArm = new MasterArm(eventManager);
 
         
-        assist = new FlightAssist(this);
-        lightToggle = new LightToggle(this);
-        tuning = new Tuning(this);
-        mfd = new MFDSystem(this);
+        assist = new FlightAssist(eventManager, power, assistToggle, stats/*, rb*/);
+        lightToggle = new LightToggle(eventManager);
+        mfd = new MFDSystem(eventManager, power);
+        tuning = new Tuning(eventManager, power, stats/*, tuningPots*/);
+
+        weaponSystem = new WeaponSystem(eventManager, power, masterArm);
+        weapons = gameObject.GetComponentsInChildren<IWeapon>();
+        var weaponEnabledStatus = new bool[weapons.Length];
+        for(int i = 0; i < weaponEnabledStatus.Length; i++){
+            weaponEnabledStatus[i] = true;
+        }
+        weaponSystem.UpdateWeapons(weapons, weaponEnabledStatus);
 
         fighterAnim = GetComponent<FighterAnimation>();
         fighterAnim.Initialize(this);
@@ -53,5 +55,20 @@ public class Ship : MonoBehaviour{
     }
     void Start(){tuning.UpdateTuningParameter();}
 
-    void FixedUpdate(){assist.Process(Time.fixedDeltaTime);}
+    void FixedUpdate(){
+        if(power.Enabled){
+            // convert velocities from world space to local
+            var LinearVelocity = rb.transform.InverseTransformVector(rb.velocity);
+                //use degrees instead of radians
+            var AngularVelocity = rb.transform.InverseTransformVector(rb.angularVelocity) * Mathf.Rad2Deg;
+            
+            // feed velocity values into assist.Process
+            assist.Calculate(LinearVelocity.x, LinearVelocity.y, LinearVelocity.z, AngularVelocity.x, AngularVelocity.y, 
+                AngularVelocity.z, Time.fixedDeltaTime);
+            
+            // feed assist.Process return values to unity physics engine
+            rb.AddRelativeForce(assist.LinearOutputX, assist.LinearOutputY, assist.LinearOutputZ, ForceMode.Force);
+            rb.AddRelativeTorque(assist.AngularOutputX, assist.AngularOutputY, assist.AngularOutputZ, ForceMode.Force);
+        }
+    }
 }

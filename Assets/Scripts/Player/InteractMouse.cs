@@ -8,19 +8,17 @@ public class InteractMouse : MonoBehaviour{
     [SerializeField]Transform cursor = null;
     Collider interactionTarget;
     RaycastHit hit;
-    InputController _input;
-    
+    InputController input;
+
     ///attach colliders to all cockpit elements
     ///place colliders on cockpit interaction layer
 
-    void Awake(){_input = GetComponentInParent<InputController>();}
-    void OnEnable(){
-        _input.OnInteract += Interact;
-        _input.OnInteractAlternate += InteractAlternate;
+    void Awake(){
+        input = GetComponentInParent<InputController>();
     }
-    void OnDisable(){
-        _input.OnInteract -= Interact;
-        _input.OnInteractAlternate -= InteractAlternate;
+    void OnEnable(){
+        input.OnInteract += Interact;
+        input.OnInteractAlternate += InteractAlternate;
     }
 
     void FixedUpdate(){

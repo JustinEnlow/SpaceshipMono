@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AsteroidManager : MonoBehaviour, IHaveHealth{
+public class AsteroidManager : MonoBehaviour{
     public float TotalHealth{get; private set;}
     public float CurrentHealth{get; private set;}
     public float ArmorAmount{get; private set;}

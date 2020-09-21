@@ -248,18 +248,6 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &1377939715 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 853354239853112830, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
-    type: 3}
-  m_PrefabInstance: {fileID: 1702417195}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a09be20a68116f240aa871f8fa78991e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1434720522 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 853354240138224603, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
@@ -433,6 +421,11 @@ PrefabInstance:
       propertyPath: ship
       value: 
       objectReference: {fileID: 417694298}
+    - target: {fileID: 2249943337537367708, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+        type: 3}
+      propertyPath: ship
+      value: 
+      objectReference: {fileID: 417694298}
     - target: {fileID: 2952846218972267251, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
         type: 3}
       propertyPath: ship
@@ -447,7 +440,7 @@ PrefabInstance:
         type: 3}
       propertyPath: input
       value: 
-      objectReference: {fileID: 1377939715}
+      objectReference: {fileID: 0}
     - target: {fileID: 4257382401031533918, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
         type: 3}
       propertyPath: ship

@@ -11,7 +11,7 @@ public class CamController : MonoBehaviour {
     [SerializeField]Transform thirdPersonVertical;
     [SerializeField]Camera vrCamera;
     XRInputSubsystem xr;
-    InputController _input;
+    InputController input;
     
     float horizontal = 0;
     float vertical = 0;
@@ -20,7 +20,7 @@ public class CamController : MonoBehaviour {
     #endregion
     
     void Awake(){
-        _input = gameObject.GetComponent<InputController>();
+        input = GetComponentInParent<InputController>();
         ///lock cursor to screen
         Cursor.lockState = CursorLockMode.Locked;
         // check if using VR headset
@@ -38,18 +38,11 @@ public class CamController : MonoBehaviour {
     }
 
     void OnEnable(){
-        _input.OnToggleCamera += ToggleCamera;
-        _input.OnCameraHorizontalChanged += RotateCameraHorizontal;
-        _input.OnCameraVerticalChanged += RotateCameraVertical;
-        _input.OnResetCameraRotation += ResetCameraRotation;
-        _input.OnRecenterVR += RecenterVR;
-    }
-    void OnDisable(){
-        _input.OnToggleCamera -= ToggleCamera;
-        _input.OnCameraHorizontalChanged -= RotateCameraHorizontal;
-        _input.OnCameraVerticalChanged -= RotateCameraVertical;
-        _input.OnResetCameraRotation -= ResetCameraRotation;
-        _input.OnRecenterVR -= RecenterVR;
+        input.OnToggleCamera += ToggleCamera;
+        input.OnCameraHorizontalChanged += RotateCameraHorizontal;
+        input.OnCameraVerticalChanged += RotateCameraVertical;
+        input.OnResetCameraRotation += ResetCameraRotation;
+        input.OnRecenterVR += RecenterVR;
     }
     
     void ToggleCamera(){

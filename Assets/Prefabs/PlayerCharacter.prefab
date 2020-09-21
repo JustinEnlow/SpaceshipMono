@@ -481,7 +481,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5166982407524773118}
   - component: {fileID: 5166982408723523554}
-  - component: {fileID: 5166982408723523567}
+  - component: {fileID: 6006132553814582413}
   m_Layer: 0
   m_Name: PlayerCharacter
   m_TagString: Untagged
@@ -523,7 +523,7 @@ MonoBehaviour:
   thirdPersonVertical: {fileID: 5166982408613571035}
   vrCamera: {fileID: 5166982406899026126}
   rotationSpeed: 0.2
---- !u!114 &5166982408723523567
+--- !u!114 &6006132553814582413
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -595,6 +595,7 @@ MonoBehaviour:
   m_Material: {fileID: 2100000, guid: 66ff6934f6c07fc41b8f3360473d88cb, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

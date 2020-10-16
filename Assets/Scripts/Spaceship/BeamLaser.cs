@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using UnityEngine;
+using Nlo.Spaceship;
 using Nlo.Spaceship.Interfaces;
 
 public class BeamLaser : MonoBehaviour, IWeapon{
+    public FireGroup FireGroup{get; set;}
+    public string Name{get; private set;}
     LineRenderer _line;
 
     void Awake(){
+        FireGroup = FireGroup.None;
+        Name = "BeamLaser";
         _line = GetComponent<LineRenderer>();
 
         _line.startWidth = .1f;

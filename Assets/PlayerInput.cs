@@ -330,9 +330,17 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""FireShipWeapon"",
+                    ""name"": ""PrimaryFireGroup"",
                     ""type"": ""Button"",
                     ""id"": ""3a33f529-902e-4fb7-9451-e43149cfe2a8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""SecondaryFireGroup"",
+                    ""type"": ""Button"",
+                    ""id"": ""5732a7ee-dd1d-4af4-a6f8-0ac2314c322d"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -742,7 +750,7 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""FireShipWeapon"",
+                    ""action"": ""PrimaryFireGroup"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -985,7 +993,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         m_Ship_Yaw = m_Ship.FindAction("Yaw", throwIfNotFound: true);
         m_Ship_Roll = m_Ship.FindAction("Roll", throwIfNotFound: true);
         m_Ship_ToggleMasterArm = m_Ship.FindAction("ToggleMasterArm", throwIfNotFound: true);
-        m_Ship_FireShipWeapon = m_Ship.FindAction("FireShipWeapon", throwIfNotFound: true);
+        m_Ship_PrimaryFireGroup = m_Ship.FindAction("PrimaryFireGroup", throwIfNotFound: true);
+        m_Ship_SecondaryFireGroup = m_Ship.FindAction("SecondaryFireGroup", throwIfNotFound: true);
         m_Ship_ToggleFloodLights = m_Ship.FindAction("ToggleFloodLights", throwIfNotFound: true);
         m_Ship_TogglePositionLights = m_Ship.FindAction("TogglePositionLights", throwIfNotFound: true);
         m_Ship_ToggleStrobeLights = m_Ship.FindAction("ToggleStrobeLights", throwIfNotFound: true);
@@ -1181,7 +1190,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputAction m_Ship_Yaw;
     private readonly InputAction m_Ship_Roll;
     private readonly InputAction m_Ship_ToggleMasterArm;
-    private readonly InputAction m_Ship_FireShipWeapon;
+    private readonly InputAction m_Ship_PrimaryFireGroup;
+    private readonly InputAction m_Ship_SecondaryFireGroup;
     private readonly InputAction m_Ship_ToggleFloodLights;
     private readonly InputAction m_Ship_TogglePositionLights;
     private readonly InputAction m_Ship_ToggleStrobeLights;
@@ -1207,7 +1217,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         public InputAction @Yaw => m_Wrapper.m_Ship_Yaw;
         public InputAction @Roll => m_Wrapper.m_Ship_Roll;
         public InputAction @ToggleMasterArm => m_Wrapper.m_Ship_ToggleMasterArm;
-        public InputAction @FireShipWeapon => m_Wrapper.m_Ship_FireShipWeapon;
+        public InputAction @PrimaryFireGroup => m_Wrapper.m_Ship_PrimaryFireGroup;
+        public InputAction @SecondaryFireGroup => m_Wrapper.m_Ship_SecondaryFireGroup;
         public InputAction @ToggleFloodLights => m_Wrapper.m_Ship_ToggleFloodLights;
         public InputAction @TogglePositionLights => m_Wrapper.m_Ship_TogglePositionLights;
         public InputAction @ToggleStrobeLights => m_Wrapper.m_Ship_ToggleStrobeLights;
@@ -1258,9 +1269,12 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @ToggleMasterArm.started -= m_Wrapper.m_ShipActionsCallbackInterface.OnToggleMasterArm;
                 @ToggleMasterArm.performed -= m_Wrapper.m_ShipActionsCallbackInterface.OnToggleMasterArm;
                 @ToggleMasterArm.canceled -= m_Wrapper.m_ShipActionsCallbackInterface.OnToggleMasterArm;
-                @FireShipWeapon.started -= m_Wrapper.m_ShipActionsCallbackInterface.OnFireShipWeapon;
-                @FireShipWeapon.performed -= m_Wrapper.m_ShipActionsCallbackInterface.OnFireShipWeapon;
-                @FireShipWeapon.canceled -= m_Wrapper.m_ShipActionsCallbackInterface.OnFireShipWeapon;
+                @PrimaryFireGroup.started -= m_Wrapper.m_ShipActionsCallbackInterface.OnPrimaryFireGroup;
+                @PrimaryFireGroup.performed -= m_Wrapper.m_ShipActionsCallbackInterface.OnPrimaryFireGroup;
+                @PrimaryFireGroup.canceled -= m_Wrapper.m_ShipActionsCallbackInterface.OnPrimaryFireGroup;
+                @SecondaryFireGroup.started -= m_Wrapper.m_ShipActionsCallbackInterface.OnSecondaryFireGroup;
+                @SecondaryFireGroup.performed -= m_Wrapper.m_ShipActionsCallbackInterface.OnSecondaryFireGroup;
+                @SecondaryFireGroup.canceled -= m_Wrapper.m_ShipActionsCallbackInterface.OnSecondaryFireGroup;
                 @ToggleFloodLights.started -= m_Wrapper.m_ShipActionsCallbackInterface.OnToggleFloodLights;
                 @ToggleFloodLights.performed -= m_Wrapper.m_ShipActionsCallbackInterface.OnToggleFloodLights;
                 @ToggleFloodLights.canceled -= m_Wrapper.m_ShipActionsCallbackInterface.OnToggleFloodLights;
@@ -1328,9 +1342,12 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @ToggleMasterArm.started += instance.OnToggleMasterArm;
                 @ToggleMasterArm.performed += instance.OnToggleMasterArm;
                 @ToggleMasterArm.canceled += instance.OnToggleMasterArm;
-                @FireShipWeapon.started += instance.OnFireShipWeapon;
-                @FireShipWeapon.performed += instance.OnFireShipWeapon;
-                @FireShipWeapon.canceled += instance.OnFireShipWeapon;
+                @PrimaryFireGroup.started += instance.OnPrimaryFireGroup;
+                @PrimaryFireGroup.performed += instance.OnPrimaryFireGroup;
+                @PrimaryFireGroup.canceled += instance.OnPrimaryFireGroup;
+                @SecondaryFireGroup.started += instance.OnSecondaryFireGroup;
+                @SecondaryFireGroup.performed += instance.OnSecondaryFireGroup;
+                @SecondaryFireGroup.canceled += instance.OnSecondaryFireGroup;
                 @ToggleFloodLights.started += instance.OnToggleFloodLights;
                 @ToggleFloodLights.performed += instance.OnToggleFloodLights;
                 @ToggleFloodLights.canceled += instance.OnToggleFloodLights;
@@ -1473,7 +1490,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         void OnYaw(InputAction.CallbackContext context);
         void OnRoll(InputAction.CallbackContext context);
         void OnToggleMasterArm(InputAction.CallbackContext context);
-        void OnFireShipWeapon(InputAction.CallbackContext context);
+        void OnPrimaryFireGroup(InputAction.CallbackContext context);
+        void OnSecondaryFireGroup(InputAction.CallbackContext context);
         void OnToggleFloodLights(InputAction.CallbackContext context);
         void OnTogglePositionLights(InputAction.CallbackContext context);
         void OnToggleStrobeLights(InputAction.CallbackContext context);

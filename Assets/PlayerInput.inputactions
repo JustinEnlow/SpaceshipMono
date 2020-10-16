@@ -317,9 +317,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "FireShipWeapon",
+                    "name": "PrimaryFireGroup",
                     "type": "Button",
                     "id": "3a33f529-902e-4fb7-9451-e43149cfe2a8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "SecondaryFireGroup",
+                    "type": "Button",
+                    "id": "5732a7ee-dd1d-4af4-a6f8-0ac2314c322d",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
@@ -729,7 +737,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "FireShipWeapon",
+                    "action": "PrimaryFireGroup",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

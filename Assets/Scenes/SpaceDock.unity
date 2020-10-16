@@ -143,12 +143,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d45018880da3674098f61e6db67b37d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!54 &417694308 stripped
-Rigidbody:
-  m_CorrespondingSourceObject: {fileID: 853354238451779703, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
-    type: 3}
-  m_PrefabInstance: {fileID: 1702417195}
-  m_PrefabAsset: {fileID: 0}
 --- !u!20 &596970367 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 853354238644400564, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
@@ -248,9 +242,27 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!4 &700366590 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7893853768858867142, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1702417195}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &743226975 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3317980189551741501, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1702417195}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1434720522 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 853354240138224603, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1702417195}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1484544749 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 853354239415438635, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
     type: 3}
   m_PrefabInstance: {fileID: 1702417195}
   m_PrefabAsset: {fileID: 0}
@@ -433,14 +445,46 @@ PrefabInstance:
       objectReference: {fileID: 417694298}
     - target: {fileID: 3434831503627570102, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
         type: 3}
+      propertyPath: hardpoints.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3434831503627570102, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+        type: 3}
       propertyPath: rb
       value: 
-      objectReference: {fileID: 417694308}
+      objectReference: {fileID: 0}
     - target: {fileID: 3434831503627570102, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
         type: 3}
       propertyPath: input
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 3434831503627570102, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+        type: 3}
+      propertyPath: hardpoints.Array.data[0]
+      value: 
+      objectReference: {fileID: 743226975}
+    - target: {fileID: 3434831503627570102, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+        type: 3}
+      propertyPath: hardpoints.Array.data[1]
+      value: 
+      objectReference: {fileID: 700366590}
+    - target: {fileID: 3434831503627570102, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+        type: 3}
+      propertyPath: CoilGun_AutoPrefab
+      value: 
+      objectReference: {fileID: 8077964503099589015, guid: 620be4f94b8bd9446a18b14f897d7672,
+        type: 3}
+    - target: {fileID: 3434831503627570102, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+        type: 3}
+      propertyPath: CoilGun_SemiAutoPrefab
+      value: 
+      objectReference: {fileID: 5242301459466462913, guid: 4f21e062cd7057243aa0d150a03232d8,
+        type: 3}
+    - target: {fileID: 3434831503627570102, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
+        type: 3}
+      propertyPath: hardpoints.Array.data[2]
+      value: 
+      objectReference: {fileID: 2049568117}
     - target: {fileID: 4257382401031533918, guid: 63e57b24dfd7cb0499613fd44b7c23d7,
         type: 3}
       propertyPath: ship
@@ -461,7 +505,8 @@ PrefabInstance:
       propertyPath: FighterUIGameObject
       value: 
       objectReference: {fileID: 1434720522}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 853354238451779703, guid: 63e57b24dfd7cb0499613fd44b7c23d7, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 63e57b24dfd7cb0499613fd44b7c23d7, type: 3}
 --- !u!1 &1998393690
 GameObject:
@@ -513,3 +558,33 @@ MonoBehaviour:
   _maxSpawnDistance: 100
   _maxScale: 5
   _asteroid: {fileID: 1504825997339382, guid: 9af61509d651171439faaee6616a1dd9, type: 3}
+--- !u!1 &2049568116
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2049568117}
+  m_Layer: 0
+  m_Name: CenterHardpointTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2049568117
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049568116}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.64, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1484544749}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

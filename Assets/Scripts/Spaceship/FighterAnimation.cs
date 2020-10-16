@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
+using Nlo.Spaceship;
 
 public class FighterAnimation : MonoBehaviour{
-    Ship ship;
+    PowerToggle power;
+    MasterArm masterArm;
+    LightToggle lightToggle;
 
     [SerializeField]GameObject PowerSwitchMesh;
     [SerializeField]GameObject MasterArmSwitchMesh;
@@ -11,34 +14,38 @@ public class FighterAnimation : MonoBehaviour{
     [SerializeField]Renderer strobeMeshRenderer;
 
 
-    public void Initialize(Ship ship){this.ship = ship;}
+    public void Initialize(PowerToggle power, MasterArm masterArm, LightToggle lightToggle){
+        this.power = power;
+        this.masterArm = masterArm;
+        this.lightToggle = lightToggle;
+    }
     public void Enable(){
-        ship.power.OnPowerToggled += AnimatePowerSwitch;
-        ship.masterArm.OnMasterArmToggled += AnimateMasterArmSwitch;
-        ship.lightToggle.OnFloodLightsToggled += AnimateFloodSwitch;
-        ship.lightToggle.OnFloodLightsToggled += UpdateFloodLights;
-        ship.lightToggle.OnPositionLightsToggled += AnimatePositionSwitch;
-        ship.lightToggle.OnPositionLightsToggled += UpdatePositionLights;
-        ship.lightToggle.OnStrobeLightsToggled += AnimateStrobeSwitch;
-        ship.lightToggle.OnStrobeLightsToggled += UpdateStrobeLights;
+        power.OnPowerToggled += AnimatePowerSwitch;
+        masterArm.OnMasterArmToggled += AnimateMasterArmSwitch;
+        lightToggle.OnFloodLightsToggled += AnimateFloodSwitch;
+        lightToggle.OnFloodLightsToggled += UpdateFloodLights;
+        lightToggle.OnPositionLightsToggled += AnimatePositionSwitch;
+        lightToggle.OnPositionLightsToggled += UpdatePositionLights;
+        lightToggle.OnStrobeLightsToggled += AnimateStrobeSwitch;
+        lightToggle.OnStrobeLightsToggled += UpdateStrobeLights;
     }
 
     void AnimatePowerSwitch(){
-        RotateSwitch(ship.power.Enabled, PowerSwitchMesh);
+        RotateSwitch(power.Enabled, PowerSwitchMesh);
 
         UpdateFloodLights();
         UpdatePositionLights();
         UpdateStrobeLights();
     }
 
-    void AnimateMasterArmSwitch(){RotateSwitch(ship.masterArm.Enabled, MasterArmSwitchMesh);}
+    void AnimateMasterArmSwitch(){RotateSwitch(masterArm.Enabled, MasterArmSwitchMesh);}
 
-    void AnimateFloodSwitch(){RotateSwitch(ship.lightToggle.FloodLightsOn, floodSwitchMesh);}
-    void UpdateFloodLights(){floodLights.SetActive(ship.lightToggle.FloodLightsOn && ship.power.Enabled);}
+    void AnimateFloodSwitch(){RotateSwitch(lightToggle.FloodLightsOn, floodSwitchMesh);}
+    void UpdateFloodLights(){floodLights.SetActive(lightToggle.FloodLightsOn && power.Enabled);}
     
-    void AnimatePositionSwitch(){RotateSwitch(ship.lightToggle.PositionLightsOn, positionSwitchMesh);}
+    void AnimatePositionSwitch(){RotateSwitch(lightToggle.PositionLightsOn, positionSwitchMesh);}
     void UpdatePositionLights(){
-        if(ship.lightToggle.PositionLightsOn && ship.power.Enabled){
+        if(lightToggle.PositionLightsOn && power.Enabled){
             positionMeshRendererLeft.material.SetInt("_LightOn", 1);
             positionMeshRendererRight.material.SetInt("_LightOn", 1);
         }
@@ -46,18 +53,18 @@ public class FighterAnimation : MonoBehaviour{
             positionMeshRendererLeft.material.SetInt("_LightOn", 0);
             positionMeshRendererRight.material.SetInt("_LightOn", 0);
         }
-        positionLights.SetActive(ship.lightToggle.PositionLightsOn && ship.power.Enabled);
+        positionLights.SetActive(lightToggle.PositionLightsOn && power.Enabled);
     }
 
-    void AnimateStrobeSwitch(){RotateSwitch(ship.lightToggle.StrobeLightsOn, strobeSwitchMesh);}
+    void AnimateStrobeSwitch(){RotateSwitch(lightToggle.StrobeLightsOn, strobeSwitchMesh);}
     void UpdateStrobeLights(){
-        if(ship.lightToggle.StrobeLightsOn && ship.power.Enabled){
+        if(lightToggle.StrobeLightsOn && power.Enabled){
             strobeMeshRenderer.material.SetInt("_LightOn", 1);
         }
         else{
             strobeMeshRenderer.material.SetInt("_LightOn", 0);
         }
-        strobeLights.SetActive(ship.lightToggle.StrobeLightsOn && ship.power.Enabled);
+        strobeLights.SetActive(lightToggle.StrobeLightsOn && power.Enabled);
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     void RotateSwitch(bool on, GameObject switchMesh){

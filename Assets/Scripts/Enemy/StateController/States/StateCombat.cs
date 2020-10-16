@@ -1,6 +1,6 @@
 ﻿/*Copyright (C) <2018>  <Justin Enlow> <https://www.gnu.org/licenses/>*/
 using UnityEngine;
-using Nlo.Math;
+using Nlo.Spaceship.Math;
 
 public class StateCombat : MonoBehaviour{
     //FlightController _flight;

@@ -3,7 +3,10 @@ using TMPro;
 using Nlo.Spaceship;
 
 public class FighterUI : MonoBehaviour{
-    Ship ship;
+    PowerToggle power;
+    FlightAssistToggle assistToggle;
+    Tuning tuning;
+    MFDSystem mfd;
     
     [SerializeField]GameObject FighterUIGameObject;
     [SerializeField]GameObject TranslationAssistWarning;
@@ -25,30 +28,35 @@ public class FighterUI : MonoBehaviour{
     [SerializeField]GameObject RightMFDWeaponScreen;
 
 
-    public void Initialize(Ship ship){this.ship = ship;}
+    public void Initialize(PowerToggle power, FlightAssistToggle assistToggle, Tuning tuning, MFDSystem mfd){
+        this.power = power;
+        this.assistToggle = assistToggle;
+        this.tuning = tuning;
+        this.mfd = mfd;
+    }
     public void Enable(){
-        ship.power.OnPowerToggled += UpdatePowerStatus;
-        ship.assistToggle.OnTranslationAssistToggled += UpdateTranslationAssist;
-        ship.assistToggle.OnRotationAssistToggled += UpdateRotationAssist;
-        ship.tuning.OnNameChanged += UpdateTuningName;
-        ship.tuning.OnValueChanged += UpdateTuningValue;
-        ship.tuning.OnIncrementChanged += UpdateTuningIncrement;
-        ship.mfd.OnIncreaseMFDBrightness += IncreaseMFDBrightness;
-        ship.mfd.OnDecreaseMFDBrightness += DecreaseMFDBrightness;
-        ship.mfd.OnActivateMFDMainScreen += ActivateMFDMainScreen;
-        ship.mfd.OnActivateMFDRadarScreen += ActivateMFDRadarScreen;
-        ship.mfd.OnActivateMFDWeaponScreen += ActivateMFDWeaponScreen;
+        power.OnPowerToggled += UpdatePowerStatus;
+        assistToggle.OnTranslationAssistToggled += UpdateTranslationAssist;
+        assistToggle.OnRotationAssistToggled += UpdateRotationAssist;
+        tuning.OnNameChanged += UpdateTuningName;
+        tuning.OnValueChanged += UpdateTuningValue;
+        tuning.OnIncrementChanged += UpdateTuningIncrement;
+        mfd.OnIncreaseMFDBrightness += IncreaseMFDBrightness;
+        mfd.OnDecreaseMFDBrightness += DecreaseMFDBrightness;
+        mfd.OnActivateMFDMainScreen += ActivateMFDMainScreen;
+        mfd.OnActivateMFDRadarScreen += ActivateMFDRadarScreen;
+        mfd.OnActivateMFDWeaponScreen += ActivateMFDWeaponScreen;
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     void UpdateTranslationAssistWarning(){
-        TranslationAssistWarning.SetActive(ship.assistToggle.TranslationAssistEnabled == false && ship.power.Enabled);
+        TranslationAssistWarning.SetActive(assistToggle.TranslationAssistEnabled == false && power.Enabled);
     }
     void UpdateRotationAssistWarning(){
-        RotationAssistWarning.SetActive(ship.assistToggle.RotationAssistEnabled == false && ship.power.Enabled);
+        RotationAssistWarning.SetActive(assistToggle.RotationAssistEnabled == false && power.Enabled);
     }
 
     void UpdatePowerStatus(){
-        FighterUIGameObject.SetActive(ship.power.Enabled);
+        FighterUIGameObject.SetActive(power.Enabled);
         UpdateTranslationAssistWarning();
         UpdateRotationAssistWarning();
     }
@@ -69,10 +77,10 @@ public class FighterUI : MonoBehaviour{
         if(mfd == MFD.Left){
             if(LeftMFDCanvas.alpha < 1.0f){LeftMFDCanvas.alpha += .01f;}
         }
-        if(mfd == MFD.Center){
+        else if(mfd == MFD.Center){
             if(CenterMFDCanvas.alpha < 1.0f){CenterMFDCanvas.alpha += .01f;}
         }
-        if(mfd == MFD.Right){
+        else if(mfd == MFD.Right){
             if(RightMFDCanvas.alpha < 1.0f){RightMFDCanvas.alpha += .01f;}
         }
     }
@@ -81,10 +89,10 @@ public class FighterUI : MonoBehaviour{
         if(mfd == MFD.Left){
             if(LeftMFDCanvas.alpha > 0f){LeftMFDCanvas.alpha -= .01f;}
         }
-        if(mfd == MFD.Center){
+        else if(mfd == MFD.Center){
             if(CenterMFDCanvas.alpha > 0f){CenterMFDCanvas.alpha -= .01f;}
         }
-        if(mfd == MFD.Right){
+        else if(mfd == MFD.Right){
             if(RightMFDCanvas.alpha > 0f){RightMFDCanvas.alpha -= .01f;}
         }
     }
@@ -95,12 +103,12 @@ public class FighterUI : MonoBehaviour{
             LeftMFDRadarScreen.SetActive(false);
             LeftMFDWeaponScreen.SetActive(false);
         }
-        if(mfd == MFD.Center){
+        else if(mfd == MFD.Center){
             CenterMFDMainScreen.SetActive(false);
             CenterMFDRadarScreen.SetActive(false);
             CenterMFDWeaponScreen.SetActive(false);
         }
-        if(mfd == MFD.Right){
+        else if(mfd == MFD.Right){
             RightMFDMainScreen.SetActive(false);
             RightMFDRadarScreen.SetActive(false);
             RightMFDWeaponScreen.SetActive(false);
@@ -109,19 +117,27 @@ public class FighterUI : MonoBehaviour{
     void ActivateMFDMainScreen(MFD mfd){
         DeactivateMFDScreens(mfd);
         if(mfd == MFD.Left){LeftMFDMainScreen.SetActive(true);}
-        if(mfd == MFD.Center){CenterMFDMainScreen.SetActive(true);}
-        if(mfd == MFD.Right){RightMFDMainScreen.SetActive(true);}
+        else if(mfd == MFD.Center){CenterMFDMainScreen.SetActive(true);}
+        else if(mfd == MFD.Right){RightMFDMainScreen.SetActive(true);}
     }
     void ActivateMFDRadarScreen(MFD mfd){
         DeactivateMFDScreens(mfd);
         if(mfd == MFD.Left){LeftMFDRadarScreen.SetActive(true);}
-        if(mfd == MFD.Center){CenterMFDRadarScreen.SetActive(true);}
-        if(mfd == MFD.Right){RightMFDRadarScreen.SetActive(true);}
+        else if(mfd == MFD.Center){CenterMFDRadarScreen.SetActive(true);}
+        else if(mfd == MFD.Right){RightMFDRadarScreen.SetActive(true);}
     }
     void ActivateMFDWeaponScreen(MFD mfd){
         DeactivateMFDScreens(mfd);
-        if(mfd == MFD.Left){LeftMFDWeaponScreen.SetActive(true);}
-        if(mfd == MFD.Center){CenterMFDWeaponScreen.SetActive(true);}
-        if(mfd == MFD.Right){RightMFDWeaponScreen.SetActive(true);}
+        if(mfd == MFD.Left){
+            LeftMFDWeaponScreen.SetActive(true);
+            /*
+            // Enable TextMeshProUGUI for each available hardpoint
+            for(int i = 0; i < ship.hardpoints.Length; i++){
+                hardpointText[i].SetActive(true);
+            }
+            */
+        }
+        else if(mfd == MFD.Center){CenterMFDWeaponScreen.SetActive(true);}
+        else if(mfd == MFD.Right){RightMFDWeaponScreen.SetActive(true);}
     }
 }

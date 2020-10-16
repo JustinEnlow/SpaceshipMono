@@ -51,9 +51,11 @@ public class InputController : MonoBehaviour{
         
         _input.Ship.ToggleMasterArm.performed += context => ship.eventManager.ToggleMasterArm();//OnToggleMasterArm?.Invoke();
         
-        _input.Ship.FireShipWeapon.performed += context => ship.eventManager.FireWeapons();//OnFireWeapons?.Invoke();
-        _input.Ship.FireShipWeapon.canceled += context => ship.eventManager.StopFiringWeapons();//OnStopFiringWeapons?.Invoke();
-        
+        _input.Ship.PrimaryFireGroup.performed += context => ship.eventManager.FirePrimaryFireGroup();//OnFireWeapons?.Invoke();
+        _input.Ship.PrimaryFireGroup.canceled += context => ship.eventManager.StopFiringPrimaryFireGroup();//OnStopFiringWeapons?.Invoke();
+        _input.Ship.SecondaryFireGroup.performed += context => ship.eventManager.FireSecondaryFireGroup();
+        _input.Ship.SecondaryFireGroup.canceled += context => ship.eventManager.StopFiringSecondaryFireGroup();
+
         _input.Ship.ToggleFloodLights.performed += context => ship.eventManager.ToggleLights(Nlo.Spaceship.Light.Flood);//OnToggleLights?.Invoke(Light.Flood);
         _input.Ship.TogglePositionLights.performed += context => ship.eventManager.ToggleLights(Nlo.Spaceship.Light.Position);//OnToggleLights?.Invoke(Light.Position);
         _input.Ship.ToggleStrobeLights.performed += context => ship.eventManager.ToggleLights(Nlo.Spaceship.Light.Strobe);//OnToggleLights?.Invoke(Light.Strobe);
